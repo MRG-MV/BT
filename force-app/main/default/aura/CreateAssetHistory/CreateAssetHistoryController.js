@@ -16,7 +16,8 @@
                     component.set("v.showNewModal", true);
                     component.set("v.Spinner", false);
                 }else{
-                    console.log('result: ' + JSON.stringify(result));
+                    // console.log('result: ' + JSON.stringify(result));
+                    //if the previous record is not closed, then show the old modal and ask user to close the previous record first based on BUIL - 3292
                     component.set("v.PreviousAssetHistory", result);
                     component.set("v.showOldModal", true);
                     component.set("v.Spinner", false);
@@ -38,7 +39,6 @@
             var AssetHistoryFields = component.get('v.AssetHistory');
             AssetHistoryFields.buildertek__Asset_Manager__c = component.get("v.recordId");
             console.log('CreateAssetHistoryController.createRecord: AssetHistoryFields: ' + JSON.stringify(AssetHistoryFields));
-            debugger;
             var action = component.get("c.CreateAssetHistoryRecord");
             action.setParams({
                 AssetHistory: AssetHistoryFields
@@ -74,7 +74,12 @@
             component.set("v.Spinner", true);
             var AssetHistoryFields = component.get('v.PreviousAssetHistory');
             console.log('CreateAssetHistoryController.updateRecord: AssetHistoryFields: ' + JSON.stringify(AssetHistoryFields));
-            debugger;
+            //buildertek__Date_off_Job__c should not be null
+            if(AssetHistoryFields.buildertek__Date_off_Job__c == null){
+                helper.showToast("Error", "Error", "Date off Job is required", "5000");
+                component.set("v.Spinner", false);
+                return;
+            }
             var action = component.get("c.UpdateAssetHistoryRecord");
             action.setParams({
                 PreviousAssetHistory: AssetHistoryFields

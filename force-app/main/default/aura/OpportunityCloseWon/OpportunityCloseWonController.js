@@ -9,6 +9,7 @@
        // var Address = component.get("v.searchAddressFilter");
        
         var action = component.get("c.getadminvalue"); 
+        console.log('action-->',action);
         action.setCallback(this, function(response) {
             var state = response.getState(); 
             var result = response.getReturnValue();

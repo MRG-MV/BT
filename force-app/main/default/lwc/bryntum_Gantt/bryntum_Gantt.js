@@ -28,8 +28,8 @@ import getAllNotes from "@salesforce/apex/BT_NewGanttChartCls.getAllNotes";
 import saveResourceForRecord from "@salesforce/apex/BT_NewGanttChartCls.saveResourceForRecord";
 import updateHideGanttOnSch from "@salesforce/apex/BT_NewGanttChartCls.updateHideGanttOnSch";
 import changeOriginalDates from "@salesforce/apex/BT_NewGanttChartCls.changeOriginalDates";
-import setWBSValue from "@salesforce/apex/BT_NewGanttChartCls.setWBSValue";
 
+import setWBSValue from "@salesforce/apex/BT_NewGanttChartCls.setWBSValue";
 
 import AdminSettings from "@salesforce/apex/BT_NewGanttChartCls.getColumnSettings";
 import PARSER from "@salesforce/resourceUrl/PapaParse";
@@ -40,6 +40,10 @@ import getRecordType from "@salesforce/apex/BT_NewGanttChartCls.getRecordType";
 import { getPicklistValues, getObjectInfo } from "lightning/uiObjectInfoApi";
 
 export default class Gantt_component extends NavigationMixin(LightningElement) {
+
+  @track wpsValue = {};
+  @track wpsBoolean = false;
+
   @api showpopup = false;
   @api holidays = [];
   @api monthsval = [];
@@ -55,6 +59,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
 
   //VARIABLE ADDED TO GET PHASE DATES - 09/10
   @api phaseDates = [];
+  @api mapOfWBSValue;
 
   @api scheduleItemsDataList;
   @api storeRes;
@@ -176,9 +181,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
   // show export popup
   @track showExportPopup = false;
   @track fileName = "gantt-chart";
-
-  @api mapOfWBSValue={};
-
 
   @wire(getRecordType) objRecordType;
 
@@ -1659,7 +1661,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       console.log("createGantt");
       console.log(this.GanttVar);
       var GanttToolbar;
-      var wbsJson;
+      var wbsObj={};
 
 
       var loc = window.location.href;
@@ -2985,32 +2987,71 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                             }
                         }
                     }*/
-        
-            this.mapOfWBSValue[renderData.taskRecord.wbsValue._value]=renderData.taskRecord.id.split('_')[0];
-            // wbsJson = JSON.stringify(mapOfWBSValue);
-            // console.log(wbsJson);
+        console.log('ids', renderData.taskRecord.id.split('_')[0]);
+        console.log('values', renderData.taskRecord.wbsValue._value);
 
-            // setWBSValue({
-            //   scheduleItemMap:myJSON,
-              
-            // }).then(function (response) {
-            //   console.log('sucess');
+        wbsObj[renderData.taskRecord.wbsValue._value]=renderData.taskRecord.id.split('_')[0];
+        // wbsObj[renderData.taskRecord.id.split('_')[0]]=renderData.taskRecord.wbsValue._value;
+
+        console.log({wbsObj});
+                    
+        var that = this;
+        that.wpsValue = wbsObj;
+
+        console.log('Out side  wpsBoolean ==>', that.wpsBoolean);
+          
+          if (that.wpsBoolean == undefined || that.wpsBoolean == null) {
+            console.log('*** null check');
+            that.wpsBoolean = false;
+            console.log('Inside wpsBoolean ==>', that.wpsBoolean);
+          }
 
 
-            // }).catch(function(error){
-            //   console.log("error");
-            //   console.log(error);
+        console.log('n3Test ==>', that.wpsValue);
+        console.log('wpsBoolean ==>', that.wpsBoolean);
 
+          try {
+            var that = this;
+            console.log('*** 0');
+            console.log('that.wpsBoolean ==>' + that.wpsBoolean);
 
-            // });
+            if (that.wpsBoolean == false) {
+              that.wpsValue = wbsObj;
+              that.wpsBoolean = true;
+  
+              console.log('*** 1');
+              setTimeout(() => {
+                setWBSValue({
+                  scheduleItemMap: JSON.stringify(wbsObj),
+                })
+                  .then(function (response) {
+                    console.log('successfilly called setWBSValue');
+                    // console.log(response);
+                  })
+                  .catch(function (error) {
+                    console.log('Error from apex call in setWBSValue');
+                  });
+    
 
-          },
+              },5000);
+             
+                console.log('*** 2');
+  
+            }
+          } catch (error) {
+            console.log('Error in custom WBS logic');
+            console.log({error});
+            console.log(JSON.stringify(error));
+          }
+          // const timeoutMilliseconds = 5000;
+
+        },
 
       });
 
-      console.log(this.mapOfWBSValue);
-      console.log(JSON.stringify(this.mapOfWBSValue));
-
+      // console.log(gantt.taskRenderer({x , y}));
+      console.log('*** N3');
+      // console.log(taskRenderer({x , y}));
 
       if (this.GanttVar) {
         this.hideSchedule = this.GanttVar.subGrids.normal.collapsed;
@@ -3254,4 +3295,9 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       }, 5000);
     }
   }
+  // saveWbsData(wbsValue){
+  //   console.log({wbsValue});
+
+  // }
+
 }
