@@ -315,8 +315,8 @@
         }
 
         function multiFiles() {
-            console.log('uploadFileData @@ ',{uploadFileData});
-            if (uploadFileData.length > 0) {
+            if (uploadFileData != undefined && uploadFileData.length > 0) {
+                console.log('uploadFileData @@ ',{uploadFileData});
                 var fileData = uploadFileData[0];
                 var reader = new FileReader();
                 reader.onload = multiFilesLoad;
@@ -534,7 +534,7 @@
                 <apex:outputPanel rendered="{!rfqToVendor.Status__c != 'Quote Submitted'}">
                     <div>
                         <span>
-                            <c:DisplayImageInTemplate /> 
+                            <c:DisplayImageInTemplate />
                         </span>
                         <span>
                             <center>
@@ -555,7 +555,7 @@
                 <apex:outputPanel rendered="{!rfqToVendor.Status__c == 'Quote Submitted'}">
                     <div>
                         <span>
-                            <c:DisplayImageInTemplate /> 
+                            <c:DisplayImageInTemplate />
                         </span>
 
 
@@ -594,7 +594,7 @@
                         </apex:pageBlockSection>
                     </div>
                     <br/>
-                    <div class="slds-box">
+                    <div class="slds-box" style="overflow:auto">
                         <b>
                             <div class="slds-badge" style="font-size: 0.8rem;border-radius: 0 !important;">RFQ Lines</div>
                         </b>

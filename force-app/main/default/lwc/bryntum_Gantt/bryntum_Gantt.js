@@ -513,12 +513,14 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
             var newTaskeDate = response; //.toLocaleDateString().split('/');
             thatThis.newTaskRecordCreate["buildertek__Finish__c"] = response; // newTaskeDate[2]+'-'+newTaskeDate[1]+'-'+newTaskeDate[0];
             if (thatThis.template.querySelectorAll("lightning-input")) {
-              if (
-                thatThis.template.querySelectorAll("lightning-input")[3]
-                  .label == "End Date"
-              ) {
-                thatThis.template.querySelectorAll("lightning-input")[3].value =
-                  thatThis.newTaskRecordCreate["buildertek__Finish__c"];
+              try {
+                if (
+                  thatThis.template.querySelectorAll("lightning-input")[3].label == "End Date"
+                ) {
+                  thatThis.template.querySelectorAll("lightning-input")[3].value =
+                    thatThis.newTaskRecordCreate["buildertek__Finish__c"];
+                }
+              } catch (error) {
               }
             }
           });
@@ -556,9 +558,9 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
             var newTaskeDate = response; //.toLocaleDateString().split('/');
             thatThis.newTaskRecordCreate["buildertek__Finish__c"] =
               newTaskeDate; // newTaskeDate[2]+'-'+newTaskeDate[1]+'-'+newTaskeDate[0];
+              console.log('log 2.');
             if (
-              thatThis.template.querySelectorAll("lightning-input")[3].label ==
-              "End Date"
+              thatThis.template.querySelectorAll("lightning-input")[3].label == "End Date"
             ) {
               thatThis.template.querySelectorAll("lightning-input")[3].value =
                 thatThis.newTaskRecordCreate["buildertek__Finish__c"];
@@ -1233,6 +1235,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     }
   }
   inputChange(event) {
+    console.log('log 3.');
     if (event.currentTarget.label == "Name") {
       this.newTaskPopupName = event.currentTarget.value;
     } else if (event.currentTarget.label == "Lag") {
@@ -1663,6 +1666,16 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       var GanttToolbar;
       var wbsObj={};
 
+      console.log('bryntum ==> ',bryntum);
+      console.log('bryntum.gantt ==> ',bryntum.gantt);
+      try {
+        // console.log('bryntum.gantt.TaskModel.fields ',bryntum.gantt.TaskModel);
+        const temp = new GANTTModule();
+        // console.log('temp data ',temp);
+        // console.log('temp data ',temp.setManuallyScheduled);
+      } catch (error) {
+        console.log('error ',error);
+      }
 
       var loc = window.location.href;
       var domName = loc.split(".lightning.force.com")[0].split("https://")[1];
@@ -1715,11 +1728,13 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         }
       }
       this.scheduleItemsDataList = scheduleDataList;
-
+      console.log('boolList:- '+ this.boolList);
+      console.log('manuallyScheduledList:- '+ this.boolList[3]);
       var formatedSchData = formatData(
         this.scheduleData,
         this.scheduleItemsData,
-        this.scheduleItemsDataList
+        this.scheduleItemsDataList,
+        this.boolList[3]
       );
       console.log("=== formatedSchData ===");
       console.log({
@@ -2987,38 +3002,23 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                             }
                         }
                     }*/
-        console.log('ids', renderData.taskRecord.id.split('_')[0]);
-        console.log('values', renderData.taskRecord.wbsValue._value);
 
         wbsObj[renderData.taskRecord.wbsValue._value]=renderData.taskRecord.id.split('_')[0];
         // wbsObj[renderData.taskRecord.id.split('_')[0]]=renderData.taskRecord.wbsValue._value;
 
-        console.log({wbsObj});
-                    
         var that = this;
         that.wpsValue = wbsObj;
 
-        console.log('Out side  wpsBoolean ==>', that.wpsBoolean);
-          
           if (that.wpsBoolean == undefined || that.wpsBoolean == null) {
-            console.log('*** null check');
             that.wpsBoolean = false;
-            console.log('Inside wpsBoolean ==>', that.wpsBoolean);
           }
-
-
-        console.log('n3Test ==>', that.wpsValue);
-        console.log('wpsBoolean ==>', that.wpsBoolean);
 
           try {
             var that = this;
-            console.log('*** 0');
-            console.log('that.wpsBoolean ==>' + that.wpsBoolean);
-
             if (that.wpsBoolean == false) {
               that.wpsValue = wbsObj;
               that.wpsBoolean = true;
-  
+
               console.log('*** 1');
               setTimeout(() => {
                 setWBSValue({
@@ -3031,12 +3031,12 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                   .catch(function (error) {
                     console.log('Error from apex call in setWBSValue');
                   });
-    
+
 
               },5000);
-             
+
                 console.log('*** 2');
-  
+
             }
           } catch (error) {
             console.log('Error in custom WBS logic');

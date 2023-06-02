@@ -61,9 +61,10 @@
        component.set("v.Spinner", true);
        var selectedRecordId;
        var selectedAccountId;
-       var selectedRecord = component.get("v.selectedLookUpRecord");
-       if(selectedRecord != undefined){
-           selectedRecordId = selectedRecord.Id;
+       var selectedRecord = component.get("v.selectedPredecessorId");
+       console.log({selectedRecord});
+       if(selectedRecord != undefined && selectedRecord != ''){
+           selectedRecordId = selectedRecord;
        }else{
            selectedRecordId = null;
        }
@@ -83,6 +84,7 @@
        }
        //alert('projectId --------> '+projectId);
        var scheduleId = component.get("v.selectedValue");
+       console.log({selectedRecordId});
        //alert('scheduleId --------> '+scheduleId);
        var action = component.get('c.insertScheduleTask');
        action.setParams({
@@ -156,5 +158,77 @@
     			}
     		}     
     	}
-	}
+	},
+
+    serachPredecessor:function(component, event, helper) {
+        console.log('serachPredecessor test');
+        component.set('v.diplayPredecessorlist' , true);
+        console.log(component.get('v.selectedValue'));
+        var action = component.get('c.getPredecessorList');
+        action.setParams({
+            scheduleId:component.get('v.selectedValue')
+        });
+        action.setCallback(this, function(response){
+            console.log(response.getState());
+            console.log(response.getError());
+            console.log(response.getReturnValue());
+            var state=response.getState();
+            var result=response.getReturnValue();
+
+            if(state === 'SUCCESS'){
+                console.log('inside success');
+                // var getValues=Object.values(result);
+                // var getKeys=Object.keys(result);
+
+                const keyValueArray = Object.entries(result).map(([key, value]) => ({ key, value }));
+
+                component.set('v.allPredecessorValue' , keyValueArray);
+                component.set('v.predecessorList' , keyValueArray);
+
+            }
+
+
+        });
+        $A.enqueueAction(action);
+        console.log(component.get('v.predecessorList'));
+    },
+    clickPredecessorValue:function(component, event, helper) {
+        var record = event.currentTarget.dataset.value;
+        var recordId = event.currentTarget.dataset.id;
+
+        component.set("v.selectedPredecessor", record);
+        component.set('v.diplayPredecessorlist' , false);
+        component.set('v.selectedPredecessorId' , recordId);
+
+        console.log({recordId});
+
+
+    },
+    handleScheduleChange:function(component, event, helper) {
+        component.set('v.diplayPredecessorlist' , false);
+        component.set('v.selectedPredecessor' , '');
+        component.set('v.selectedPredecessorId' , '');
+
+
+    },
+    onkeyUp:function(component, event, helper) {
+        var getkeyValue= event.getSource().get('v.value').toLowerCase();
+        var getAllPredecessorValue= component.get('v.allPredecessorValue');
+        var tempArray = [];
+        var i;
+        for (i = 0; i < getAllPredecessorValue.length; i++) {
+            if ((getAllPredecessorValue[i].value.toLowerCase().indexOf(getkeyValue) != -1)) {
+                    tempArray.push(getAllPredecessorValue[i]);
+            }else{
+                component.set("v.selectedPredecessorId" , '');
+            }
+        }
+        console.log({tempArray});
+        component.set('v.predecessorList' , tempArray);
+    },
+    hideList:function(component, event, helper){
+            // component.set('v.diplayPredecessorlist' , false);
+
+    },
+
 })

@@ -116,9 +116,8 @@ public with sharing class SchedulePOController {
             
             //Set Schedule Item 
             pur.buildertek__Schedule_Item__c=projectTask.Id;
-            if (Schema.sObjectType.buildertek__Purchase_Order__c.fields.buildertek__Schedule_Item__c.isUpdateable()){
+            pur.buildertek__Schedule__c=scheduleId;
             update pur;
-            }
             
             errMessage.MessageType = 'Success';
             errMessage.Message = 'Purchase Order Scheduled Successfully';
@@ -127,11 +126,25 @@ public with sharing class SchedulePOController {
             errMessage.Message = exp.getMessage(); 
             errMessage.MessageType = 'Error';
             System.debug('error line :: '+exp.getLineNumber());
+            System.debug('error line :: '+exp.getMessage());
+
             return errMessage;
         }
         
     }
     
+
+    @AuraEnabled
+    public static  Map<String,String> getPredecessorList(String scheduleId) {
+        List<buildertek__Project_Task__c> schduleItemList= [Select Id , Name , buildertek__Schedule__c From buildertek__Project_Task__c  WHERE buildertek__Schedule__c=:scheduleId];
+        Map<String,String> predecessorMap= new Map<String, String>();
+        for(buildertek__Project_Task__c scheduleItem: schduleItemList){
+            predecessorMap.put(scheduleItem.Id , scheduleItem.Name);
+        }
+        return predecessorMap;
+
+    }
+
     public Class ScheduleWrap{
        @AuraEnabled public boolean scheduleCheckbox;
        @AuraEnabled public Schedule__c getSchedulesList;
