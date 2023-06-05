@@ -521,6 +521,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                     thatThis.newTaskRecordCreate["buildertek__Finish__c"];
                 }
               } catch (error) {
+                console.log('log one error:- '+error);
               }
             }
           });

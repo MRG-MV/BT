@@ -2,10 +2,6 @@ import  insertUpdateTask from '@salesforce/apex/BT_NewGanttChartCls.insertUpdate
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
 function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manuallyscheduledvalue){
-    var temp = false;
-    if(manuallyscheduledvalues != null && manuallyscheduledvalues != undefined){
-        temp = manuallyscheduledvalue;
-    }
     var taskData = scheduleItemsData;
     var taskDependencyData = [];
     var resourceRowData = [];
@@ -47,7 +43,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
                 taskPhaseRow["endDate"] = ""
                 taskPhaseRow["children"] = []
                 taskPhaseRow["customtype"] = 'Phase'
-                taskPhaseRow["manuallyScheduled"] = temp;
+                taskPhaseRow["manuallyScheduled"] = manuallyscheduledvalue;
                // taskPhaseRow["children"].push(taskListForPhase[i])
                 taskPhaseRow["constraintType"] = 'none'
                 newPhaseFlag = false;
@@ -81,7 +77,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
                 rowChilObj["percentDone"] = taskListForPhase[i].buildertek__Completion__c
                 rowChilObj["startDate"] = taskListForPhase[i].buildertek__Start__c
                 rowChilObj['predecessor'] = taskListForPhase[i].buildertek__Dependency__c;
-                rowChilObj["manuallyScheduled"] = temp;
+                rowChilObj["manuallyScheduled"] = manuallyscheduledvalue;
 
                 if (taskListForPhase[i].hasOwnProperty('buildertek__Dependency__c') == true) {
                     rowChilObj['predecessorName'] = taskListForPhase[i].buildertek__Dependency__r.Name;
@@ -154,7 +150,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
                         resourceRow['id'] = taskListForPhase[i].buildertek__Resource__c;
                         resourceRow['name'] = taskListForPhase[i].buildertek__Resource__r.Name;
                         resourceRow['calendar'] = "general";
-                        resourceRow["manuallyScheduled"] = temp;
+                        resourceRow["manuallyScheduled"] = manuallyscheduledvalue;
                         resourceRowData.push(resourceRow)
                         resourceRowIdList.push(taskListForPhase[i].buildertek__Resource__c)
                     }
@@ -179,7 +175,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
                         resourceRow['id'] = taskListForPhase[i].buildertek__Contractor_Resource__c
                         resourceRow['name'] = taskListForPhase[i].buildertek__Contractor_Resource__r.Name;
                         resourceRow['calendar'] = "general";
-                        resourceRow["manuallyScheduled"] = temp;
+                        resourceRow["manuallyScheduled"] = manuallyscheduledvalue;
                         resourceRowData.push(resourceRow)
                         resourceRowIdList.push(resourceRow['id'])
                     }
@@ -240,7 +236,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
             taskPhaseRow["expanded"] = true
             taskPhaseRow["endDate"] = ""
             taskPhaseRow["children"] = []
-            taskPhaseRow["manuallyScheduled"] = temp;
+            taskPhaseRow["manuallyScheduled"] = manuallyscheduledvalue;
             //taskPhaseRow["children"].push(taskListForPhase[i])
             taskPhaseRow["constraintType"] = 'none'
             var rowChilObj = {};
@@ -269,7 +265,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
                 rowChilObj["name"] = taskListForPhase[i].Name
                 rowChilObj["percentDone"] = taskListForPhase[i].buildertek__Completion__c
                 rowChilObj["startDate"] = taskListForPhase[i].buildertek__Start__c
-                rowChilObj["manuallyScheduled"] = temp;
+                rowChilObj["manuallyScheduled"] = manuallyscheduledvalue;
                 rowChilObj['predecessor'] = taskListForPhase[i].buildertek__Dependency__c;
 
                 if (taskListForPhase[i].hasOwnProperty('buildertek__Dependency__c') == true) {
@@ -435,7 +431,7 @@ function formatData(scheduleData,scheduleItemsData,scheduleItemsDataList, manual
             rowChilObj["name"] = taskListForPhase[i].Name
             rowChilObj["percentDone"] = taskListForPhase[i].buildertek__Completion__c
             rowChilObj["startDate"] = taskListForPhase[i].buildertek__Start__c
-            rowChilObj["manuallyScheduled"] = temp;
+            rowChilObj["manuallyScheduled"] = manuallyscheduledvalue;
             
             rowChilObj['predecessor'] = taskListForPhase[i].buildertek__Dependency__c;
 
