@@ -101,7 +101,7 @@
                         New Expense
                     </div>
                 </header>
-                <lightning:recordEditForm aura:id="recordViewForm" objectApiName="buildertek__Expense__c" onload="{!c.handleLoad}" onsubmit="{!c.handleSubmit}" onsuccess="{!c.onRecordSuccess}">
+                <lightning:recordEditForm aura:id="recordViewForm" objectApiName="buildertek__Expense__c" onload="{!c.handleLoad}" onsubmit="{!c.handleSubmit}" onsuccess="{!c.onRecordSuccess}" density="comfy">
                     <div class="" style="height:50vh;width:100%;overflow: auto;">
                         <div class="slds-p-around_medium" style="background-color:white;">
                             <lightning:layout multipleRows="true">

@@ -21,7 +21,6 @@
                 var pageSize = component.get("v.pageSize");
                 var result = response.getReturnValue();
                 component.set("v.masterBudgetsList", result);
-               
                 var resultData = [];
                 result.forEach(function(item,index){
                     resultData.push(item.purchaseOrderRecord);
@@ -30,13 +29,14 @@
                 for (var i = 0; i < rows.length; i++) {
                     var row = rows[i];
                     if (row.buildertek__Vendor__c){
-                       row.Vendorname = row.buildertek__Vendor__r.Name; 
+                        row.Vendorname = row.buildertek__Vendor__r.Name; 
                     }
-                    if (row.buildertek__Schedule_Item__c){
-                       row.ScheduleItem = row.buildertek__Schedule_Item__r.Name; 
+                    if (row.buildertek__Schedule_Item__c && row.buildertek__Schedule_Item__r.Name != undefined ){
+                        row.ScheduleItem = row.buildertek__Schedule_Item__r.Name; 
                     }
                     if(row.Name){
                         row.linkName = '/'+row.Id;
+                        // console.log("data 2" , row.linkName );
                     }
                 }
                 component.set("v.orgData",rows);

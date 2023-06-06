@@ -10,10 +10,21 @@
             if(state === "SUCCESS"){
                  component.set("v.projectName", response.getReturnValue());
             }
+            else{
+                component.set("v.Spinner", false);
+                var toastEvent = $A.get("e.force:showToast");
+                toastEvent.setParams({
+                "type": 'error',
+                "message": 'Please Add Purchase Order(s)',
+                
+            });
+            toastEvent.fire();  
+            }
         });
          $A.enqueueAction(action);
         helper.getPoList(component, event, helper);
         helper.setColumns(component);
+        console.log("hello init is called");
     },
     doRfqSearch : function(component, event, helper) {
         //var pageNumber = component.get("v.PageNumber");
@@ -40,7 +51,7 @@
         var toggleVal = component.get("v.groupBytoggle");
         component.set("v.selectedTableRows", []);
         component.set("v.selectedTableRowIds", []);
-        
+
         if(toggleVal){
             component.set("v.Spinner", true);
             helper.formatDataByGroups(component,event,helper,data); 

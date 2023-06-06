@@ -8,6 +8,7 @@ import { loadScript, loadStyle } from "lightning/platformResourceLoader";
 import GanttStyle from "@salesforce/resourceUrl/BT_Bryntum_NewGanttCss";
 //import GANTT from "@salesforce/resourceUrl/bryntum_gantt";
 import GANTTModule from "@salesforce/resourceUrl/BT_Bryntum_NewGantt_ModuleJS";
+// import GANTTModule from "@salesforce/resourceUrl/BT_Bryntum_NewGantt_ModuleJS_2";
 //import  SchedulerPro  from "@salesforce/resourceUrl/bryntumScheduleProModuleJS";
 import GanttToolbarMixin from "./lib/GanttToolbar";
 import GanttToolbarMixinDup from "./lib/GanttToolbarDup";
@@ -218,14 +219,10 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
 
   errorCallback(error, stack) {}
 
-  adminSettings(){
-    AdminSettings()
-    .then(result => {
-      console.log('result ',result);
-      this.boolList = result;
-    })
-    .catch(error => {console.log('error ',error);})
-  }
+  @wire (AdminSettings)
+  relatedMedia({data,error}) {
+    this.boolList = data;
+  };
 
   get acceptedFormats() {
     return [".pdf", ".png", ".jpg", ".jpeg", ".csv", ".docx", ".doc"];
@@ -1111,10 +1108,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       scheduleid: this.recordId,
     })
       .then((response) => {
-        console.log("get schedule item records.");
-        console.log({
-          response,
-        });
         this.formatCustomResponse(response);
       })
       .catch((error) => {
@@ -1330,7 +1323,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       isWorking: false,
     };
 
-    this.adminSettings();
     console.log("Connected Callback");
   }
 
@@ -1667,16 +1659,12 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       var GanttToolbar;
       var wbsObj={};
 
-      console.log('bryntum ==> ',bryntum);
-      console.log('bryntum.gantt ==> ',bryntum.gantt);
       try {
-        // console.log('bryntum.gantt.TaskModel.fields ',bryntum.gantt.TaskModel);
-        const temp = new GANTTModule();
-        // console.log('temp data ',temp);
-        // console.log('temp data ',temp.setManuallyScheduled);
+        console.log('bryntum ==> ',JSON.parse(JSON.stringify(bryntum)));
       } catch (error) {
-        console.log('error ',error);
+        console.log('error on JSON ',error);
       }
+
 
       var loc = window.location.href;
       var domName = loc.split(".lightning.force.com")[0].split("https://")[1];
@@ -1729,8 +1717,8 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         }
       }
       this.scheduleItemsDataList = scheduleDataList;
-      console.log('boolList:- '+ this.boolList);
-      console.log('manuallyScheduledList:- '+ this.boolList[3]);
+      console.log('boolList:- ', this.boolList);
+      console.log('manuallyScheduledList:- ', this.boolList[3]);
       var formatedSchData = formatData(
         this.scheduleData,
         this.scheduleItemsData,
