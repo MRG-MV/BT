@@ -221,6 +221,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
 
   @wire (AdminSettings)
   relatedMedia({data,error}) {
+    console.log('data in wire ',data);
     this.boolList = data;
   };
 
@@ -1327,33 +1328,37 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
   }
 
   renderedCallback() {
-    if (this.bryntumInitialized) {
-      return;
-    }
-    this.bryntumInitialized = true;
 
-    Promise.all([
-      loadScript(this, GANTTModule), //GanttDup ,SchedulerPro GANTTModule,GANTT + "/gantt.lwc.module.js"
-      //loadStyle(this,  GANTT + "/gantt.stockholm.css")
-      //loadStyle(this,  GANTT + "/gantt.stockholm.css")
-      loadStyle(this, GanttStyle + "/gantt.stockholm.css"),
-      // loadScript(this, Papa.unparse()), // papaparse lib..
-      loadScript(this, PARSER + "/PapaParse/papaparse.js"),
-    ])
-      .then(() => {
-        console.log("*******LIBRARY LOADED SUCCESSFULLY******");
-        this.gettaskrecords();
-        this.loadedChart = true;
-      })
-      .catch((error) => {
-        this.dispatchEvent(
-          new ShowToastEvent({
-            title: "Error loading Gantt Chart",
-            message: error,
-            variant: "error",
-          })
-        );
-      });
+    let intervalID = setInterval(() => {
+
+      if (this.bryntumInitialized) {
+        return;
+      }
+      this.bryntumInitialized = true;
+
+      Promise.all([
+        loadScript(this, GANTTModule), //GanttDup ,SchedulerPro GANTTModule,GANTT + "/gantt.lwc.module.js"
+        //loadStyle(this,  GANTT + "/gantt.stockholm.css")
+        //loadStyle(this,  GANTT + "/gantt.stockholm.css")
+        loadStyle(this, GanttStyle + "/gantt.stockholm.css"),
+        // loadScript(this, Papa.unparse()), // papaparse lib..
+        loadScript(this, PARSER + "/PapaParse/papaparse.js"),
+      ])
+        .then(() => {
+          console.log("*******LIBRARY LOADED SUCCESSFULLY******");
+          this.gettaskrecords();
+          this.loadedChart = true;
+        })
+        .catch((error) => {
+          this.dispatchEvent(
+            new ShowToastEvent({
+              title: "Error loading Gantt Chart",
+              message: error,
+              variant: "error",
+            })
+          );
+        });
+      }, 1000);
   }
 
   //   disconnectedCallback() {

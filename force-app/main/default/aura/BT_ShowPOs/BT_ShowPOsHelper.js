@@ -36,7 +36,6 @@
                     }
                     if(row.Name){
                         row.linkName = '/'+row.Id;
-                        // console.log("data 2" , row.linkName );
                     }
                 }
                 component.set("v.orgData",rows);

@@ -143,9 +143,6 @@ public without sharing class ChangeOrderTriggerHandler {
                             buildertek__Budget_Item__c  oldBudgetLine = [SELECT Id, buildertek__Item_Name__c, Name FROM buildertek__Budget_Item__c WHERE ID =: changeOrder.buildertek__Budget_Line__c];
                             if(oldBudgetLine.Name == Name){
                                 oldBudgetLine.buildertek__CO_Total__c = changeOrder.buildertek__Total_Amount_Tax__c;
-
-                                oldBudgetLine.buildertek__Unit_Price__c=changeOrder.buildertek__Total_of_SubTotal__c;
-                                oldBudgetLine.buildertek__Labor__c=400000;
                                 update oldBudgetLine;
                             }
                         }

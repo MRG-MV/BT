@@ -3,7 +3,7 @@
     <apex:attribute type="id" name="relatedTo_id" assignTo="{!relatedToId}" description="RelatedTo" />
 
     <table style="width: 100%;text-align: left;border-spacing: 0;">
-        <tr style="background:lightgrey;">
+        <tr style="background:#d3d3d3;">
             <th style="font-size:15px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; padding: 5px 15px;">Name</th>
             <th style="font-size:15px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; padding: 5px 15px;">Description</th>
             <th style="font-size:15px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; padding: 5px 15px; text-align: right">Price</th>
@@ -12,7 +12,7 @@
         </tr>
         
         <apex:repeat value="{!QuoteLineRecordList}" var="QuoteLineRecord">
-            <tr style="line-height: 1.6;">
+            <tr class="alternateRow" style="line-height: 1.6;">
                 <td style="font-size:14px; padding:5px 15px; color:black; text-align:left; border-bottom:1px solid #ccc; border-right:1px solid #ccc;">
                     <apex:outputText value="{!QuoteLineRecord.Name}" />
                 </td>
