@@ -788,5 +788,15 @@
 		component.set("v.isExpanded", isExpanded);
 	},
 
+	showinput: function(component, event, helper) {
+		var h1Element = event.target;
+		var inputElement = component.find("myInput");
+	
+		$A.util.addClass(h1Element, "hide");
+		$A.util.removeClass(inputElement, "hide");
+	},
+	
+	
+
 
 })

@@ -5,6 +5,9 @@
         // helper.getName(component, event, helper);
         helper.getFields(component, event, helper);
         helper.getparentrecord(component, event, helper);
+        // setTimeout(helper.handleChangeProjectHelper(component, event, helper), 3000);
+
+
     },
     reInit: function (component, event, helper) {
         $A.get('e.force:refreshView').fire();
@@ -281,6 +284,10 @@
     changeProject:function(component, event, helper) {
         console.log('displayBudget');
         component.set('v.displayBudget', false);
+        component.set('v.selectedBudgetName' , '');
+        component.set('v.selectedBudgetId' , '');
+        helper.handleChangeProjectHelper(component, event, helper);
+
     },
     hideList:function(component, event, helper){
         

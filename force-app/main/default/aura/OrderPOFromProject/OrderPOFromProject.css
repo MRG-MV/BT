@@ -68,3 +68,56 @@
 /* .THIS .slds-input{
     padding-right: 0px !important;
 } */
+.THIS .tableTitleCol {
+    overflow: hidden;
+    width: 32%;
+    padding-left: 5%;
+    display: flex;
+    justify-content: space-between;
+}
+.THIS .titlename {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+}
+.THIS .name {
+    display: flex;
+}
+.THIS .rename_div {
+    display: block;
+    align-items: center;
+}
+.THIS .rename_input {
+    width: 77%;
+    margin-bottom: 23px;
+}
+.THIS .right {
+    width: 24px;
+    height: 25px;
+    background-color: #6699CC;
+    margin: 22px 2px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.THIS .wrong {
+    width: 24px;
+    height: 25px;
+    background-color: #455a64;
+    margin: 22px 2px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.THIS .editpen {
+    display: none;
+    cursor: pointer;
+    margin-right: 14%;
+    align-items: center;
+}
+.THIS .penicon {
+    height: 19px;
+    width: 19px;
+}
