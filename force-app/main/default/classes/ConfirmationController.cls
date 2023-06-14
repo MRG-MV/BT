@@ -53,28 +53,21 @@ public without sharing class ConfirmationController{
     public boolean displayPopup{ get; set; }
 
     public Boolean isActionMethodCall{ get; set; }
-
     public String quoteMessage{ get; set; }
-
     public Boolean isAccepted{ get; set; }
 
     public Boolean allQuoteLineAccepted{ get; set; }
 
     public String Result{ get; set; }
-
     public String RejectResult{ get; set; }
-
-    public String MainData{ get; set; }
 
     //public ApexPages.StandardController std;
     public transient string imageContent{ get; set; }
-
-    public string imageContentforReject{ get; set; }
-
+     public string imageContentforReject{ get; set; }
     public Boolean reject_Quote_on_Rejected_Lines{ get; set; }
 
     public ConfirmationController(){
-        isAccepted = false;
+        isAccepted  = false;
         // std = ApexPages.StandardSetController;
         //        System.debug('Constrctor 2::'+std);
         contractstatus = true;
@@ -82,7 +75,7 @@ public without sharing class ConfirmationController{
         isOrderLien = false;
         isActionMethodCall = true;
         isAccepted = false;
-        allQuoteLineAccepted = true;
+        allQuoteLineAccepted=true;
         Result = 'Not Accepted';
         RejectResult = 'Not Accepted';
         contrctrec = new buildertek__Contract__c();
@@ -94,53 +87,51 @@ public without sharing class ConfirmationController{
             isOrderLien = false;
         }
 
-        buildertek__Admin_Interface_Node_Configuration__c adminInterfaceNodeConfigurations = [SELECT Id, Name, buildertek__Reject_Quote_on_Rejected_Lines__c
-                                                                                              FROM buildertek__Admin_Interface_Node_Configuration__c
-                                                                                              WHERE Name = :'Quote Configuration'];
+        buildertek__Admin_Interface_Node_Configuration__c adminInterfaceNodeConfigurations = [SELECT Id, Name, buildertek__Reject_Quote_on_Rejected_Lines__c FROM buildertek__Admin_Interface_Node_Configuration__c WHERE Name =: 'Quote Configuration'];
         reject_Quote_on_Rejected_Lines = adminInterfaceNodeConfigurations.buildertek__Reject_Quote_on_Rejected_Lines__c;
 
         //recordID =  std.getRecord().Id;
         Checkcustomerview = apexpages.currentPage().getParameters().get('view');
         system.debug('id---constructr --customerview------> ' + recordID);
-        system.debug('Checkcustomerview' + Checkcustomerview);
+        system.debug('Checkcustomerview'+Checkcustomerview);
         objectAPIName = '';
         string keyPrefix = recordID.substring(0, 3);
         for (Schema.SObjectType obj : Schema.getGlobalDescribe().Values()){
             String prefix = obj.getDescribe().getKeyPrefix();
             //if (prefix == keyPrefix){
-            if (keyPrefix.equals(prefix)){
-                system.debug('hello' + keyPrefix.equals(prefix));
+            if(keyPrefix.equals(prefix)){
+                system.debug('hello'+keyPrefix.equals(prefix));
                 objectAPIName = obj.getDescribe().getName();
                 break;
             }
         }
         //if(Checkcustomerview == null){
-        if (objectAPIName.contains('buildertek__Quote__c')){
+        if(objectAPIName.contains('buildertek__Quote__c')){
             buildertek__Quote__c quotrec;
-            quotrec = [select id, Name, buildertek__Status__c, buildertek__Customer_Accepted_Date__c, buildertek__To_Emails__c, buildertek__Opportunity__c, buildertek__Opportunity__r.OwnerId
+            quotrec = [select id, Name, buildertek__Status__c, buildertek__Customer_Accepted_Date__c, buildertek__To_Emails__c,buildertek__Opportunity__c,buildertek__Opportunity__r.OwnerId
                        from buildertek__Quote__c
                        where Id = :recordId
                        limit 1];
-            if (quotrec != null && quotrec.buildertek__Status__c == 'Customer Accepted'){
+            if(quotrec != null && quotrec.buildertek__Status__c == 'Customer Accepted'){
                 quoteMessage = 'This Quote has already been Accepted, please contact your Sales Representative with any questions.';
-                isAccepted = true;
-                Result = 'Accepted';
+                isAccepted  = true;
+                 Result = 'Accepted';
                 RejectResult = 'Accepted';
-            } else if (quotrec != null && quotrec.buildertek__Status__c == 'Rejected'){
+            }else if(quotrec != null && quotrec.buildertek__Status__c == 'Rejected'){
                 quoteMessage = 'This Quote has already been Rejected, please contact your Sales Representative with any questions.';
-                isAccepted = true;
+                isAccepted  = true;
                 Result = 'Accepted';
                 RejectResult = 'Rejected';
-            } else{
-                isAccepted = false;
+            }else{
+                isAccepted  = false;
             }
 
         }
-        // }
-        /* if(recordID != null){
-         objectAPIName = Id.valueOf(recordID).getSObjectType().getDescribe().getName();
-         system.debug('objectAPIName&&&&&&&&&&&'+objectAPIName);
-         }*/
+       // }
+       /* if(recordID != null){
+            objectAPIName = Id.valueOf(recordID).getSObjectType().getDescribe().getName();
+            system.debug('objectAPIName&&&&&&&&&&&'+objectAPIName);
+        }*/
 
         /*  if(objectAPIName.contains('buildertek__Contract__c')){
          contrctrec = [select id,Name,buildertek__Status__c,buildertek__Project__c from buildertek__Contract__c where Id = :recordID limit 1];
@@ -214,7 +205,7 @@ public without sharing class ConfirmationController{
             if (recjectquotelineids.size() > 0){
                 rejectQuotelinerecords = [select id, Name, Net_Total_Price__c, buildertek__Quote__c, buildertek__Status__c
                                           from buildertek__Quote_Item__c
-                                          where buildertek__Quote__c = :recordID and Id IN:recjectquotelineids];
+                                          where buildertek__Quote__c = :recordID and Id IN :recjectquotelineids];
                 for (buildertek__Quote_Item__c qlinerec : rejectQuotelinerecords){
                     qlinerec.buildertek__Status__c = 'Reject';
                 }
@@ -223,7 +214,7 @@ public without sharing class ConfirmationController{
             if (acceptQuotelineids.size() > 0){
                 acceptQuotelinerecords = [select id, Name, Net_Total_Price__c, buildertek__Quote__c, buildertek__Status__c
                                           from buildertek__Quote_Item__c
-                                          where buildertek__Quote__c = :recordID and Id IN:acceptQuotelineids];
+                                          where buildertek__Quote__c = :recordID and Id IN :acceptQuotelineids];
                 for (buildertek__Quote_Item__c qlinerec : acceptQuotelinerecords){
                     qlinerec.buildertek__Status__c = 'Accept';
                 }
@@ -279,8 +270,6 @@ public without sharing class ConfirmationController{
             conDocLink.ContentDocumentId = conDoc;  //ContentDocumentId Id from ContentVersion
             conDocLink.shareType = 'I';
             insert conDocLink;
-
-
             system.debug('objectAPIName-----' + objectAPIName);
             if (objectAPIName.contains('buildertek__Contract__c')){
                 buildertek__Contract__c contractrec = [select id, Name, buildertek__Status__c, buildertek__Customer_Accepted_Date__c, buildertek__Project__c, buildertek__Signed_Contract_Date__c
@@ -307,7 +296,7 @@ public without sharing class ConfirmationController{
                 }
             }
             if (objectAPIName.contains('buildertek__Quote__c')){
-                if (!reject_Quote_on_Rejected_Lines){
+                if (!reject_Quote_on_Rejected_Lines) {
                     for (linewrapper rec : wraplst){
                         for (quotelinewrapper wrapp : rec.warapperrec){
                             if (wrapp.isRejected == true){
@@ -318,7 +307,7 @@ public without sharing class ConfirmationController{
                     if (customerrecjectlineids.size() > 0){
                         customerrejectQuotelinerecords = [select id, Name, Net_Total_Price__c, buildertek__Quote__c, buildertek__Status__c
                                                           from buildertek__Quote_Item__c
-                                                          where buildertek__Quote__c = :recordID and Id IN:customerrecjectlineids];
+                                                          where buildertek__Quote__c = :recordID and Id IN :customerrecjectlineids];
                         for (buildertek__Quote_Item__c qlinerec : customerrejectQuotelinerecords){
                             qlinerec.buildertek__Status__c = 'Accept';
                         }
@@ -421,7 +410,7 @@ public without sharing class ConfirmationController{
                     qlinewrap.isApproved = false;
                     qlinewrap.isRejected = true;
                     if (reject_Quote_on_Rejected_Lines){
-                        allQuoteLineAccepted = false;
+                        allQuoteLineAccepted=false;
                     }
                 }
                 if (quoteitemrec.buildertek__Net_Unit__c != null){
@@ -456,7 +445,7 @@ public without sharing class ConfirmationController{
             Contact c;
             c = [select id, Email
                  from Contact
-                 where email <> null
+                 where email<>null
                  limit 1];
             vendorID = c.id;
         }
@@ -483,33 +472,42 @@ public without sharing class ConfirmationController{
                                          limit 1];
             theTemplate = emailtemrec.Id;
         }
-        email.setTemplateId(theTemplate);
+       email.setTemplateId(theTemplate);
         email.setWhatId(recordId);
         email.setTargetObjectId(vendorID);
         email.setSaveAsActivity(false);
-        email.setToAddresses(new List<String>{ 'noreplay@buildertek.com' });
+        email.setToAddresses(new List<String>{'noreplay@buildertek.com'});
         msgList.add(email);
 
-        Messaging.SendEmailResult[] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[]{ email });
+        Messaging.SendEmailResult[] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
         System.debug('Email Results isSuccess = ' + r[0].IsSuccess());
         Database.rollback(sp);
         for (Messaging.SingleEmailMessage emailNew : msgList){
             templateBody1 = emailNew.getHTMLBody();
         }
-        /*  String[] toAddresses = new String[] {'mailto:manisha.kotha@diligentforcelabs.com'};
+      /*  String[] toAddresses = new String[] {'mailto:manisha.kotha@diligentforcelabs.com'};
 
-         email.setToAddresses(toAddresses);
-         email.setSenderDisplayName('Salesforce Support');
-         email.setSubject('New Case Created : ');
-         email.setBccSender(false);
-         email.setUseSignature(false);
-         email.setPlainTextBody('Your Case: '  +' has been created.');
-         email.setHtmlBody('Your case:<b> </b>has been created.<p>'+
-         'To view your case <a href=https://mydomainname.my.salesforce.com/>click here.</a>');
-         email.SetSaveAsActivity(true);
+email.setToAddresses(toAddresses);
+email.setSenderDisplayName('Salesforce Support');
+email.setSubject('New Case Created : ');
+email.setBccSender(false);
+email.setUseSignature(false);
+email.setPlainTextBody('Your Case: '  +' has been created.');
+email.setHtmlBody('Your case:<b> </b>has been created.<p>'+
+     'To view your case <a href=https://mydomainname.my.salesforce.com/>click here.</a>');
+     email.SetSaveAsActivity(true);
 
-         // Send the email you have created.
-         Messaging.sendEmail(new Messaging.SingleEmailMessage[] { email });  */
+// Send the email you have created.
+Messaging.sendEmail(new Messaging.SingleEmailMessage[] { email });  */
+
+
+
+
+
+
+
+
+
 
 
         Messaging.SingleEmailMessage email1 = new Messaging.SingleEmailMessage();
@@ -520,9 +518,9 @@ public without sharing class ConfirmationController{
         email1.setWhatId(recordId);
         email1.setTargetObjectId(vendorID);
         email1.setSaveAsActivity(false);
-        email1.setToAddresses(new List<String>{ 'noreplay@buildertek.com' });
+        email1.setToAddresses(new List<String>{'noreplay@buildertek.com'});
         msgList1.add(email1);
-        Messaging.SendEmailResult[] r1 = Messaging.sendEmail(new Messaging.SingleEmailMessage[]{ email1 });
+        Messaging.SendEmailResult[] r1 = Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email1});
         Database.rollback(sp);
         for (Messaging.SingleEmailMessage emailNew1 : msgList1){
             templateBody2 = emailNew1.getHTMLBody();
@@ -530,7 +528,6 @@ public without sharing class ConfirmationController{
         system.debug('templateBody 2 ----------> ' + templateBody2);
         templateBody = templateBody1 + templateBody2;
         strBody = templateBody;
-        MainData = strBody;
         system.debug('strBody -----> ' + strBody);
 
         try{
@@ -543,7 +540,6 @@ public without sharing class ConfirmationController{
             string imageid = doc.id;
             imageid = imageid.substring(0, 15);
             strBody = strBody.replace('###############', imageid);
-            MainData = strBody;
         } catch (exception ex){
             System.debug('Error Mesage::' + ex.getMessage());
             System.debug('Error Line::' + ex.getLineNumber());
@@ -553,10 +549,10 @@ public without sharing class ConfirmationController{
     public void generatePDF(){
     }
 
-    public PageReferenceuploadSignature(){
+    public PageReference uploadSignature(){
 
         transient Date nowDT = Date.today();
-        System.debug('Check Debug log ==> ' + nowDT);
+        System.debug('Check Debug log ==> '+nowDT);
         customerAcceptedDate = String.valueOf(DateTime.now());
         ContentVersion conVer = new ContentVersion();
         conVer.ContentLocation = 'S'; // to use S specify this document is in Salesforce, to use E for external files
@@ -623,74 +619,16 @@ public without sharing class ConfirmationController{
         if (objectAPIName.contains('buildertek__Quote__c')){
             buildertek__Quote__c quoterec;
 
-            quoterec = [select id, Name, buildertek__Status__c, buildertek__Customer_Accepted_Date__c, buildertek__To_Emails__c, buildertek__Opportunity__c, buildertek__Opportunity__r.OwnerId
+            quoterec = [select id, Name, buildertek__Status__c, buildertek__Customer_Accepted_Date__c, buildertek__To_Emails__c,buildertek__Opportunity__c,buildertek__Opportunity__r.OwnerId
                         from buildertek__Quote__c
                         where Id = :recordId
                         limit 1];
-            templateId = apexpages.currentPage().getParameters().get('templateId');
             if (quoterec != null){
                 quoterec.buildertek__Customer_Accepted_Date__c = nowDT;
                 quoterec.buildertek__Status__c = 'Customer Accepted';
                 quoterec.buildertek__Date_Accepted_by_Customer__c = system.now();
                 quoterec.buildertek__Date_Sent_To_Customer__c = System.today();
-                quoterec.buildertek__Description__c = imageContent;
                 update quoterec;
-
-
-                System.debug('imageContent: ' + imageContent);
-
-//            /new email start
-                list<OrgWideEmailAddress> owea = new list<OrgWideEmailAddress>();
-                list<buildertek__Admin_Interface_Node_Configuration__c> adminInterfaceNodeConfigurations = [Select Id, buildertek__Email_Address__c
-                                                                                                            from buildertek__Admin_Interface_Node_Configuration__c
-                                                                                                            WHERE Name = :'Email Configuration'];
-                if (adminInterfaceNodeConfigurations.size() > 0){
-                    owea = [select Id
-                            from OrgWideEmailAddress
-                            where Address = :adminInterfaceNodeConfigurations[0].buildertek__Email_Address__c];
-                }
-                List<Messaging.SingleEmailMessage> actualMessageList = new List<Messaging.SingleEmailMessage>();
-
-                // loop through the previous message list and set the email fields
-                for (Messaging.SingleEmailMessage email : messageList){
-                    Messaging.SingleEmailMessage emailToSend = new Messaging.SingleEmailMessage();
-                    emailToSend.setToAddresses(email.getToAddresses());
-                    if (owea.size() > 0){
-                        emailToSend.setOrgWideEmailAddressId(owea.get(0).Id);
-                    }
-                    emailToSend.setHTMLBody('recordId:' + recordId + ';templateId:' + templateId + ';fileId:' + fileid);
-                    emailToSend.setSaveAsActivity(false);
-                    emailToSend.setSubject('Test Email');
-                    //emailToSend.setOrgWideEmailAddressId(email.getOrgWideEmailAddressId());
-                    // emailToSend.setFileAttachments(email.getFileAttachments());
-                    //emailToSend.setCcAddresses(CCAdresses);
-                    actualMessageList.add(emailToSend);
-                    system.debug('emailToSend--->' + emailToSend);
-                }
-
-
-                Messaging.SendEmailResult[] serList = Messaging.sendEmail(actualMessageList);
-                System.debug('The email was sent successfully.');
-                //new email end
-                // Blob b = setAttachmentBody(recordId, templateId, ConVer.Id);
-                // Blob b = setAttachmentBody('a081K00000ykCe5QAE','00X1K000000wkgwUAA', '0681K00000e3DMhQAM' );
-
-
-                // system.debug('Blob ---> ' + b);
-
-                // ContentVersion conVer1 = new ContentVersion();
-                // conVer1.PathOnClient = 'Quote.pdf'; // The files name, extension is very important here which will help the file in preview.
-                // conVer1.VersionData = b; // converting your binary string to Blog
-                // insert conVer1;    //Insert ContentVersion
-
-                // ContentDocumentLink conDocLink1 = New ContentDocumentLink();
-                // conDocLink1.LinkedEntityId = recordId; // Specify RECORD ID here i.e Any Object ID (Standard Object/Custom Object)
-                // conDocLink1.ContentDocumentId = [SELECT ContentDocumentId
-                //                                  FROM ContentVersion
-                //                                  WHERE Id = :conVer1.Id].ContentDocumentId;  //ContentDocumentId Id from ContentVersion
-                // conDocLink1.Visibility = 'AllUsers';
-                // insert conDocLink1;
-
 
                 /*if(quoterec.buildertek__Status__c == 'Customer Accepted' && Checkcustomerview == null){
                  string theTemplate;
@@ -709,10 +647,10 @@ public without sharing class ConfirmationController{
 
                  String testString = quoterec.buildertek__To_Emails__c;
                  List<String> values = testString.split(',');
-                 // List<String> to = new List<String>();
-                 // to.add('harika.chunduri@diligentforcelabs.com');
+                // List<String> to = new List<String>();
+                // to.add('harika.chunduri@diligentforcelabs.com');
                  List<String> cc = new List<String>();
-                 // cc.add('');
+                // cc.add('');
                  system.debug('theTemplate'+theTemplate + 'templateId'+templateId +'values' + values);
                  PreviewQuoteController.acceptandsendProposal('','',recordId,theTemplate,values, cc, conVer.Id ,cc,'');
                  }*/
@@ -720,9 +658,9 @@ public without sharing class ConfirmationController{
             }
 
         }
-        system.debug('objectAPIName' + objectAPIName);
+        system.debug('objectAPIName'+objectAPIName);
         if (objectAPIName.contains('buildertek__Change_Order__c')){
-            buildertek__Change_Order__c corec = [select id, Name, buildertek__Customer_Accepted_Date__c, buildertek__Date_Approved__c, buildertek__Status__c
+            buildertek__Change_Order__c corec = [select id, Name, buildertek__Customer_Accepted_Date__c, buildertek__Date_Approved__c,buildertek__Status__c
                                                  from buildertek__Change_Order__c
                                                  where Id = :recordID
                                                  limit 1];
@@ -733,46 +671,13 @@ public without sharing class ConfirmationController{
             }
         }
         customSignature = true;
-
-
-        System.debug('strBody ==> ' + MainData);
-        System.debug('imageContent ==> ' + imageContent);
-        // Convert HTML body to Blob
-        Blob blobBodys = Blob.valueOf(MainData);
-
-        // Convert Blob to base64 encoded string
-        String base64Body = EncodingUtil.base64Encode(blobBodys);
-        System.debug('bolbhtmlbody ==>' + base64Body);
-        String Data = base64Body + imageContent;
-
-        System.debug('Data ==> ' + Data);
-
-        // Blob blobbody = Blob.valueof(Data);
-        Blob blobbody = EncodingUtil.base64Decode(imageContent);
-
-        System.debug('blobbody ==> ' + blobbody);
-
-        Messaging.Emailfileattachment efa = new Messaging.Emailfileattachment();
-        efa.setFileName('Contract.png');
-        efa.setBody(blobbody);
-
-        System.debug('efa ==> ' + efa);
-
-
-        //Apex Single email message
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setToAddresses(new String[]{ 'krunal.l@mvclouds.com' });//Set To Email Address
-        mail.setSubject('Test Email With Attachment');//Set Subject
-        mail.setHtmlBody('Please find the attachment.');//Set HTML Body
-        mail.setFileAttachments(new Messaging.EmailFileAttachment[]{ efa });//Set File Attachment
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{ mail });//Send Email
-
         return null;
     }
+
     public PageReference insertAttachment(){
         transient ContentDistribution cdPublicLink = [SELECT Id, DistributionPublicUrl, ContentDownloadUrl
-                                                      FROM ContentDistribution
-                                                      WHERE Id = :cdId];
+                                            FROM ContentDistribution
+                                            WHERE Id = :cdId];
         PageReference pdfPage;
         pdfPage = Page.buildertek__ConfirmationPageAsPDF;
         pdfPage.getParameters().put('Id', recordID);
@@ -788,7 +693,7 @@ public without sharing class ConfirmationController{
             transient ContentVersion conVer = new ContentVersion();
             conVer.ContentLocation = 'S'; // to use S specify this document is in Salesforce, to use E for external files
             conVer.PathOnClient = 'Purchase Order Lien.pdf'; // The files name, extension is very important here which will help the file in preview.
-            conVer.Title = 'Purchase Order Lien' + ' ' + Datetime.valueOf(customerAcceptedDate).format('MM-dd-yyyy HH:mm:ss') + '.pdf'; // Display name of the files
+            conVer.Title = 'Purchase Order Lien' + ' ' + Datetime.valueOf(customerAcceptedDate).format('MM-dd-yyyy HH:mm:ss')+'.pdf'; // Display name of the files
             conVer.VersionData = pdfBlob;  // converting your binary string to Blog
             insert conVer;
             // First get the Content Document Id from ContentVersion Object
@@ -815,7 +720,6 @@ public without sharing class ConfirmationController{
         public decimal listTotal{ get; set; }
 
         public list<quotelinewrapper> warapperrec{ get; set; }
-
     }
 
     public class quotelinewrapper{
@@ -824,26 +728,5 @@ public without sharing class ConfirmationController{
         public Boolean isApproved{ get; set; }
 
         public Boolean isRejected{ get; set; }
-
     }
-
-    public static Blob setAttachmentBody(String recordId, String templateId, String fileid){
-        System.debug(recordId);
-        System.debug(templateId);
-        System.debug(fileid);
-
-
-        pagereference pdf;
-        pdf = Page.buildertek__BT_GenerateQuotePDFSignature;
-        system.debug('*********' + pdf);
-        pdf.getParameters().put('recordId', recordId);
-        pdf.getParameters().put('templateId', templateId);
-        // pdf.getParameters().put('fileId', 'background-image:url("data:image/png;base64,'+fileid+'");');
-        pdf.getParameters().put('fileId', fileid);
-        pdf.setRedirect(true);
-
-        Blob blobbody = !Test.isRunningTest() ? pdf.getContent() : Blob.ValueOf('dummy text');
-        return blobbody;
-    }
-
 }

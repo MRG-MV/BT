@@ -788,15 +788,15 @@
 		component.set("v.isExpanded", isExpanded);
 	},
 
-	showinput: function(component, event, helper) {
-		var h1Element = event.target;
-		var inputElement = component.find("myInput");
-	
-		$A.util.addClass(h1Element, "hide");
-		$A.util.removeClass(inputElement, "hide");
+	onclicknun: function(component, event, helper) {
+		component.set("v.emailnun", false);
+		component.set("v.emailwrite", true);
 	},
 	
-	
+	cancleadd: function(component, event, helper) {
+		component.set("v.emailnun", true);
+		component.set("v.emailwrite", false);
+	},
 
 
 })

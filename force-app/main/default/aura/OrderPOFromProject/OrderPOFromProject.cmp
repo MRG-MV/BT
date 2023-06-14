@@ -81,6 +81,9 @@
     <ltng:require styles="{!$Resource.MOdalPreviewWidth72}"/> 
     
     <aura:attribute name="isExpanded" type="Boolean" default = "false"/>
+    <aura:attribute name="emailnun" type="Boolean" default="true" />
+    <aura:attribute name="emailwrite" type="Boolean" default="false" />
+    <aura:attribute name="emailid" type="String" access="global" />
     
     <div style = "position : sticky; top:5.6rem; background : white; z-index : 1">
 
@@ -532,30 +535,34 @@
                                                 <aura:if isTrue="{!row.buildertek__Vendor__r.buildertek__Email_Address__c}">
                                                     <ui:outputText value="{!row.buildertek__Vendor__r.buildertek__Email_Address__c}" /> 
                                                     
+                                                    <!-- <aura:set attribute="else">
+                                                        <h1 style = "color:red;">
+                                                            There is no Email for this Vendor                                                        
+                                                        </h1>
+                                                    </aura:set> -->
                                                     <aura:set attribute="else">
                                                         <!-- <h1 style = "color:red;">
                                                             There is no Email for this Vendor                                                        
                                                         </h1> -->
-                                                        
-                                                        <div class="tableTitleCol">
-                                                            <div class="slds-truncate titlename">
-                                                                <div class="name">
-                                                                    <!-- <lightning:formattedText value="There is no Email for this Vendor" class="slds-col title_name" /> -->
-                                                                    <h1 style = "color:red;" onclick="{!c.showinput}">
+                                                        <aura:if isTrue="{!v.emailnun}">
+                                                            <h1 style = "color:red;" onclick="{!c.onclicknun}" class="h1cls">
                                                             There is no Email for this Vendor                                                        
-                                                        </h1>
+                                                        </h1>                                                          
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.emailwrite}">
+                                                            <!-- <h1 style = "color:Green;">
+                                                            There is no Email for this Vendor                                                        
+                                                        </h1>                                                           -->
+                                                        <!-- <div class="tableTitleCol"> -->
+                                                            <!-- <div class="slds-truncate titlename"> -->
+                                                                <div class="rename_div">
+                                                                    <lightning:input type="text" value="{!v.emailid}" class="rename_input" />
+                                                                    <div class="right" onclick="{!c.addemail}"><img src="{!$Resource.right}" alt="" /></div>
+                                                                    <div class="wrong" onclick="{!c.cancleadd}"><img src="{!$Resource.cross}" alt="" /></div>
                                                                 </div>
-                                                                <div class="slds-col slds-grid slds-wrap rename_div">
-                                                                    <lightning:input type="text" value="{!v.formname}" onchange="{!c.rename}" onkeypress="{!c.key}" onclick="{!c.insideClick}" class="rename_input" />
-                                                                    <div class="right" onclick="{!c.renameForm}"><img src="{!$Resource.right}" alt="" /></div>
-                                                                    <div class="wrong" onclick="{!c.cancleRenameForm}"><img src="{!$Resource.cross}" alt="" /></div>
-                                                                </div>
-                                                            </div>
-                                                            <!-- <span class="editpen"  onclick="{!c.new_rename}" title="Rename">
-                                                                <img src="{!$Resource.editpen}" class="penicon" />
-                                                            </span> -->
-                                                        </div>
-
+                                                            <!-- </div> -->
+                                                        <!-- </div> -->
+                                                        </aura:if>
                                                     </aura:set>
                                                 </aura:if>
                                                 <aura:set attribute="else">
