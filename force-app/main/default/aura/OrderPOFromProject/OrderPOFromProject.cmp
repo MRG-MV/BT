@@ -549,16 +549,14 @@
                                                             </h1>                                                          
                                                         </aura:if>
                                                         <aura:if isTrue="{!row.Id == v.selectedRowId}">
-                                                            <!-- <aura:set attribute="else"> -->
                                                             <div class="rename_div" data-index="{!row.Id}" id="{!row.Id}">
                                                                 <lightning:input type="text" value="{!v.emailid}" class="rename_input" />
-                                                                <div class="right" onclick="{!c.addemail}" data-index = "{!row.buildertek__Vendor__c}" id="{!row.Id}"><img src="{!$Resource.right}" alt="" /></div>
-                                                                <div class="wrong" onclick="{!c.cancleadd}"><img src="{!$Resource.cross}" alt="" /></div>
+                                                                <div class="right" onclick="{!c.addemail}" data-index = "{!row.buildertek__Vendor__c}" id="{!row.Id}"><lightning:icon iconName="utility:success" alternativeText="Approved" size="small" title="Approved" /></div>
+                                                                <div class="wrong" onclick="{!c.cancleadd}"><lightning:icon iconName="utility:clear" alternativeText="Reject" size="small" title="Reject" /></div>
                                                             </div>
                                                             <aura:if isTrue="{!not(empty(v.errorMessage))}">
                                                                 <div class="error" style = "color:red;">{!v.errorMessage}</div>
                                                             </aura:if>
-                                                        <!-- </aura:set> -->
                                                         </aura:if>
                                                     </aura:set>
                                                 </aura:if>
@@ -613,12 +611,9 @@
                                             <aura:if isTrue="{!row.buildertek__Vendor__c}">
                                                 <aura:if isTrue="{!row.buildertek__Vendor__r.buildertek__Email_Address__c}">                                         
                                                     <aura:set attribute="else">
-                                                            <div class="wrongs" data-index = "{!row.Id}"  onclick="{!c.removePO}"><img src="{!$Resource.cross}" alt="" style="padding-right: 1px;padding-top: 1px;"/></div>
+                                                            <div class="wrongs" data-index = "{!row.Id}"  onclick="{!c.removePO}"><lightning:icon iconName="utility:delete" alternativeText="Delete" size="small" title="Delete" /></div>
                                                     </aura:set>
                                                 </aura:if>
-                                                <aura:set attribute="else">
-                                                    <span></span>
-                                                </aura:set>
                                             </aura:if>
                                         </td>
                                     </tr>

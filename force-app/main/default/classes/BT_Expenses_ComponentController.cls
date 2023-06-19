@@ -62,6 +62,17 @@ public with sharing class BT_Expenses_ComponentController {
     }
 
     @AuraEnabled
+    public static List<buildertek__Change_Order__c> getChangeOrders(Id projectId){
+        List<buildertek__Change_Order__c> changeOrderList = new List<buildertek__Change_Order__c>();
+        changeOrderList = [SELECT Id, Name, buildertek__Project__c, buildertek__Description__c, buildertek__Total_Costs__c, buildertek__Budget__c, buildertek__Budget_Line__c
+                                FROM buildertek__Change_Order__c
+                                WHERE buildertek__Budget_Line__c = null AND buildertek__Budget__c = null AND buildertek__Project__c=: projectId ORDER BY Name ASC];
+        return changeOrderList;
+    }
+
+
+
+    @AuraEnabled
     public static List<buildertek__Account_Payable_Clone__c> saveInv(List<buildertek__Account_Payable_Clone__c> Invoices){
         System.debug('invoices: ' + invoices);
         update invoices;

@@ -101,7 +101,11 @@ public without sharing class ChangeOrderTriggerHandler {
                 budgetLine.buildertek__Budget__c = newCO.buildertek__Budget__c;
                 //3314 ticket changes
                 budgetLine.buildertek__CO_Total__c = newCO.buildertek__Total_Amount__c;
-                budgetLine.buildertek__Unit_Price__c = newCO.buildertek__Subtotal__c;
+                //3334 changes
+                // budgetLine.buildertek__Unit_Price__c = newCO.buildertek__Subtotal__c;
+                budgetLine.buildertek__Unit_Price__c = newCO.buildertek__Total_Costs__c;
+                //3334 changes
+
                 budgetLine.buildertek__Quantity__c = 1;
                 //3314 ticket changes
                 budgetLine.buildertek__Group__c = budgetLineGroupId;

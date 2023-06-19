@@ -867,17 +867,26 @@
 		}
         component.set("v.SelectedPurchaseOrders", updatedVendorList);
 		var disableBtn = false;
-		updatedVendorList.forEach(element => {
-			console.log('element.buildertek__Vendor__c ==> '+element.buildertek__Vendor__c);
-			if (element.buildertek__Vendor__c != null && element.buildertek__Vendor__c != '') {
+		if (updatedVendorList.length > 0) {
+			console.log('in if');
+			updatedVendorList.forEach(element => {
+			  console.log('element.buildertek__Vendor__c ==> ' + element.buildertek__Vendor__c);
+			  if (element.buildertek__Vendor__c != null && element.buildertek__Vendor__c != '') {
 				if (element.buildertek__Vendor__r.buildertek__Email_Address__c == null || element.buildertek__Vendor__r.buildertek__Email_Address__c == '') {
-					disableBtn = true;
+				  disableBtn = true;
 				}
-			} else{
+			  } else {
 				disableBtn = true;
-			}
-		});
-
+			  }
+			});
+		  } else {
+			// disableBtn = false;
+			component.set("v.selectedPOList", false);
+			var a = component.get('c.closePOListPopUp');
+            $A.enqueueAction(a);
+		  }
+		  
+        console.log('disableBtn',disableBtn);
 		component.set("v.disableOrder", disableBtn);
 
 	},
