@@ -633,8 +633,8 @@ Messaging.sendEmail(new Messaging.SingleEmailMessage[] { email });  */
                 buildertek__RFQ_Template_Settings__c rfqTemplateSettings = buildertek__RFQ_Template_Settings__c.getOrgDefaults();
 
                 List<String> to = new List<String>();
-                OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'buildertek@mvclouds.com'];
-                // OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress];
+                // OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'buildertek@mvclouds.com'];
+                OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress];
                 
                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                 mail.setToAddresses(new String[]{rfqTemplateSettings.buildertek__Inbound_Email_Address__c});
