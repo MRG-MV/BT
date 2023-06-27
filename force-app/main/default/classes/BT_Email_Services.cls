@@ -72,6 +72,7 @@ global with sharing class BT_Email_Services implements Messaging.InboundEmailHan
                     owea = [select Id from OrgWideEmailAddress where Address =: adminInterfaceNodeConfigurations[0].buildertek__Email_Address__c];
         }
 
+        system.debug('owea '+owea);
         system.debug(fromId);
         system.debug(emailSubject.indexOf('[ref'));
         if (emailSubject.indexOf('[ref') != -1){
