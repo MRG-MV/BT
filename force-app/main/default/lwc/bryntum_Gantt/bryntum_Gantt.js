@@ -2058,13 +2058,31 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                     // console.log('In if conditon for enddate');
                     var start;
                     var endDate = new Date(record.value);
-                  console.log('record>>>', record.record);
-                  console.log('name>>>', record.record._data.name);
-                  console.log('ennDate ',endDate);
-                  var start = new Date(record.record.originalData.startDate.getTime());
-                  var start2 = new Date(record.record.startDate.getTime());
+                    
+                    var start;
+                  if(typeof(record.record.originalData.startDate) == 'string'){
+                    var syear = record.record.originalData.startDate.split('-')[0];
+                    var smonth = record.record.originalData.startDate.split('-')[1];
+                    var sday = record.record.originalData.startDate.split('-')[2];
+                    // var start2 = new Date(record.record.originalData.startDate.getTime());
+                    console.log('record.record.originalData ==> ',record.record.originalData);
+                    console.log('record.record.originalData.startDate ==> ',record.record.originalData.startDate);
+                    console.log('Type of record.record.originalData.startDate ==> ',typeof(record.record.originalData.startDate));
 
-                  // let inputDate = record.record.originalData.startDate;
+                    var start = new Date(parseInt(syear), parseInt(smonth) - 1, parseInt(sday) + parseInt(record.record.originalData.duration) - 1);
+                  } else{
+
+                    var start = new Date(record.record.originalData.startDate.getTime());
+
+                  } 
+                  // console.log('record>>>', record.record);
+                  // console.log('name>>>', record.record._data.name);
+                  // console.log('ennDate ',endDate);
+
+                  // console.log('record.record.originalData.startDate.getTime() ==>',record.record.originalData.startDate.getTime());
+                  // var start = new Date(record.record.originalData.startDate.getTime());
+
+                  // let inputDate = record.record.originalData.startDate;s
                   // console.log('inputDate ',inputDate);
                   // let parts = inputDate.split("-"); // Split the input date into year, month, and day parts
 
@@ -2077,7 +2095,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
 
 
                   console.log('start >>>',typeof(start));
-                  console.log('start2 >>>',typeof(start2));
+                  // console.log('start2 >>>',typeof(start2));
                   console.log('startDate ',record.record.startDate);
                   console.log('startDate ',record.record.originalData.startDate);
                   var duration = record.record.duration;
@@ -2102,7 +2120,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                     if (new Date(eDate2).getDay() == 6) {
                       eDate2 = new Date(eDate2.setDate(eDate2.getDate() + 2));
                     }
-                    //console.log('custom',eDate2)
+                    console.log('custom1',eDate2)
                     eDate2 = new Date(eDate2);
                   }
                   endDate.setDate(endDate.getDate() - 1);
@@ -2116,6 +2134,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                     record.value.setFullYear(eDate2.getFullYear());
                     record.value.setDate(eDate2.getDate() + 1);
                   }
+                  console.log('custom2',eDate2)
                   var eDateafter = endDate;
                   return (
                     months[endDate.getMonth()] +
@@ -2680,7 +2699,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                   editorContext.value.setMonth(dt.getMonth());
                   editorContext.value.setFullYear(dt.getFullYear());
                   var duration = 0;
-                  const date1 = new Date(editorContext.record._data.startDate);
+                  const date1 = new Date(editorContext.record.originalData.startDate);
                   const date2 = new Date(dt);
                   const diffTime = Math.abs(date2 - date1);
                   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
