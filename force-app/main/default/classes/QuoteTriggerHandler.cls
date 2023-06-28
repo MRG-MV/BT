@@ -272,7 +272,7 @@ public without sharing class QuoteTriggerHandler {
                 if(qutrec.buildertek__Status__c == 'Customer Accepted'  && oldQuotesMap.get(qutrec.id).buildertek__Status__c != qutrec.buildertek__Status__c){
                     // string emailbody = '<html><body><h3>  Your Quote has been Accepted </h3>'  + '<br/>';
                     User user = [SELECT Id, Email, Name FROM User WHERE Id =:qutrec.OwnerId];
-                    EmailTemplate templates = [SELECT Id, DeveloperName FROM EmailTemplate WHERE DeveloperName = 'QuoteAccepted'];
+                    List<EmailTemplate> templates = [SELECT Id, DeveloperName FROM EmailTemplate WHERE DeveloperName = 'QuoteAccepted'];
                     // emailbody += 'Quote Name : '+qutrec.Name+'<br/>';
                     // if(qutrec.buildertek__Customer_Account__c != null){
                     //     emailbody += 'Customer Name : '+qutrec.buildertek__Customer_Account__r.Name+'<br/>';
@@ -283,6 +283,15 @@ public without sharing class QuoteTriggerHandler {
                     // if(qutrec.OwnerId != null){
                     //     emailbody += 'Quote Owner : '+user.Name+'<br/></body></html>';
                     // }
+                    Id tempID = null;
+                    if (!templates.isEmpty()) {
+                        tempID = templates[0].Id;
+                    }
+                
+                    if (tempID == null) {
+                        System.debug('Email template not found');
+                        return;
+                    }
 
                     string email = qutrec.OwnerId;
                     OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress LIMIT 1];
@@ -297,7 +306,7 @@ public without sharing class QuoteTriggerHandler {
                         }
                         // mail.setSubject('Quote Accepted (Quote Id : '+qutrec.Id+')');
                         // mail.setHtmlBody(emailbody);
-                        mail.setTemplateId(templates.ID);
+                        mail.setTemplateId(tempID);
                         mail.setSaveAsActivity(false);
                         // Set the related record ID
                         mail.setWhatId(qutrec.Id);

@@ -232,13 +232,3 @@
     max-height: 43vh;
     }
 }    */
-.THIS .divcont::-webkit-scrollbar {
-    width: 13px;
-    height: 13px;
-}
-.THIS .divcont::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Set the background color of the track */
-}
-.THIS .divcont::-webkit-scrollbar-thumb {
-    background: #888; /* Set the color of the scroll bar handle */
-}
