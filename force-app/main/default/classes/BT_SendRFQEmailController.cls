@@ -94,7 +94,7 @@ vendorUserMap.put(usr.AccountId,usr);
         // if (Schema.sObjectType.EmailTemplate.fields.id.isAccessible()){
         rfqAwardTemplate = [SELECT Id,DeveloperName
                             FROM EmailTemplate
-                            WHERE DeveloperName = 'RFQ_Award'].Id;
+                            WHERE DeveloperName = 'RFQ_Award_Email_New'].Id;
         // } 
         string rfqAwardTemplateCommunity;
         // if (Schema.sObjectType.EmailTemplate.fields.id.isAccessible()){
@@ -106,7 +106,7 @@ vendorUserMap.put(usr.AccountId,usr);
         // if (Schema.sObjectType.EmailTemplate.fields.id.isAccessible()){
         rfqAccepetedTemplate = [SELECT Id,DeveloperName
                                 FROM EmailTemplate
-                                WHERE DeveloperName = 'RFQ_Thank_You'].Id;
+                                WHERE DeveloperName = 'RFQ_Thank_You_New'].Id;
         // } 
         String[] toaddres;
          map<Id,Contact> contactMap = new map<Id,Contact>();
