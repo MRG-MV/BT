@@ -12,8 +12,6 @@
 
     <div class="main">
         <div class="slds-size_1-of-1 sizebox s-item-1">
-            <!-- <div class="slds-grid gridbox"> -->
-                <!-- <div class="slds-size_4-of-4 s-item-1"> -->
                     <div class="tab-container ">
                         <div class="tab-menu">
                             <ul>
@@ -22,15 +20,27 @@
                                 <li><a data-tab-id="tab3">Support</a></li>
                             </ul>
                         </div>
-
+                        
                         <div class="tab active-tab-content" data-id="tab1">
                             <div class="pdfcont">
-                            <div class="pdf-container">
-                                <iframe src={pdfUrl} class="pdf-iframe"></iframe>
+                                <div class="pdf-container">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-small-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12" style="background:rgba(232, 241, 249, 0.5); height: 65vh;align-items: center; justify-content: center; display: flex; border-radius:10px;">
+                                            <center>
+                                            <p class="poppins" style="font-weight: 700;"> We have released a new package</p><br/>
+                                            <p class="poppins" style="font-size: 22px;font-weight: 600; text-align: -webkit-center;"> Product Name : Builder Tek</p><br/>
+                                            <p class="poppins" style="font-size: 22px; font-weight: 600; text-align: -webkit-center;">Version : {descriptionValue}</p><br/>
+                                            <p class="poppins" style="font-size: 20px; font-weight: 600; text-align: -webkit-center; padding-left: 10px; padding-right: 10px;"> Click the below button to discover our latest package Release Notes </p><br/>
+                                            <center><button onclick={openPDF} class="button-3d">Release Notes</button></center></center>
+                                        </div>
+                                        <div class="slds-col slds-small-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+                                            <img src={img} style="float: right; height:65vh; width:100%;" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        </div>
-
+                        
                         <div class="tab" data-id="tab2">
                             <div class="slds-p-top_medium slds-p-left_large slds-p-bottom_large slds-p-right_large">
                                 <div class="slds-text-heading_small slds-p-around_medium UserConfigDetails">
@@ -614,6 +624,7 @@
                                 <div class="email_error_msg" if:false={Message_msg}>Please Enter Valid Message
                                     Details..!</div>
                             <div class="button">
+                            <div class="savebutton" onclick={onClear}><span>Clear</span></div>
                             <div class="savebutton" onclick={onSubmit}><span>Submit</span></div>
                         </div>
                         </div>

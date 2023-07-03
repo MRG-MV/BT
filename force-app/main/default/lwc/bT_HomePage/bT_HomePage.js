@@ -1,33 +1,62 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import PDF_Resource from '@salesforce/resourceUrl/Releasenote';
-import designcss from '@salesforce/resourceUrl/designcss'
+import Resource from '@salesforce/resourceUrl/Release';
+import getStaticResourceDescription from '@salesforce/apex/PDFController.getStaticResourceDescription';
+import designcss from '@salesforce/resourceUrl/designcss';
+import sendemail from '@salesforce/apex/PDFController.sendemail';
+import createCase from '@salesforce/apex/PDFController.createCase';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class Qf_guide2 extends LightningElement {
+
+export default class Qf_guide2 extends NavigationMixin(LightningElement) {
   @track spinnerdatatable = false;
   error_toast = true;
   pdfUrl;
+  img;
+  descriptionValue;
   activeSections = ['A'];
   activeSectionsMessage = '';
   supportname;
-    
+  email;
+  subject;
+  message;
+  name_msg = true;
+  email_msg = true;
+  Message_msg = true;
+  subject_msg = true;
 
-    handleSectionToggle(event) {
-        const openSections = event.detail.openSections;
 
-        if (openSections.length === 0) {
-            this.activeSectionsMessage = 'All sections are closed';
-        } else {
-            this.activeSectionsMessage =
-                'Open sections: ' + openSections.join(', ');
-        }
+  connectedCallback() {
+    this.img = Resource;
+    this.pdfUrl = PDF_Resource;
+    document.title = 'BT Home Page';
+    loadStyle(this, designcss);
+  }
+  openPDF() {
+    window.open(this.pdfUrl);
+  }
+  handleSectionToggle(event) {
+    const openSections = event.detail.openSections;
+
+    if (openSections.length === 0) {
+      this.activeSectionsMessage = 'All sections are closed';
+    } else {
+      this.activeSectionsMessage =
+        'Open sections: ' + openSections.join(', ');
     }
-
-    connectedCallback() {
-        this.pdfUrl = PDF_Resource;
-        loadStyle(this, designcss);
-    }
-
+  }
+  
+  @wire(getStaticResourceDescription)
+  wiredDescription({ error, data }) {
+      if (data) {
+          this.descriptionValue = data;
+          console.log(this.descriptionValue);
+      } else if (error) {
+          console.error('Error fetching static resource description:', error);
+      }
+  }
   renderedCallback() {
     this.template.querySelectorAll("a").forEach(element => {
       element.addEventListener("click", evt => {
@@ -64,85 +93,100 @@ export default class Qf_guide2 extends LightningElement {
   Support_name(event) {
     this.supportname = event.target.value;
     this.name_msg = true;
-}
-name_msg = true;
-email;
-subject;
-message;
-email_msg = true;
-Message_msg = true;
-subject_msg = true;
-Message_msg = true;
-Support_email(event) {
-  this.email = event.target.value;
-  this.email_msg = true;
-}
-Quickbot_cc(event) {
-  this.quickbotcc = event.target.value;
-  this.cc_msg = true;
-}
-Support_message(event) {
-  this.message = event.target.value;
-  this.Message_msg = true;
-
-}
-Support_subject(event) {
-  this.subject = event.target.value;
-  this.subject_msg = true;
-
-}
-onSubmit() {
-
-  var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  var validation1 = pattern.test(this.email);
-  var validation2 = true;
-  this.supportname = this.supportname.trim();
-  this.subject = this.subject.trim();
-  this.message = this.message.trim();
-  if ((this.supportname == undefined) || (this.supportname == '')) {
-      this.name_msg = false;
-  } else if (validation1 == false) {
-      this.email_msg = false;
-  } else if ((validation2 == false)) {
-      this.cc_msg = false;
-  } else if (this.subject == undefined || (this.subject == '')) {
-      this.subject_msg = false;
-  } else if (this.message == undefined || (this.message == '')) {
-      this.Message_msg = false;
-  } else {
-      this.email_msg = true;
-      // sendemail({
-      //         name: this.supportname,
-      //         email: this.email,
-      //         subject: this.subject,
-      //         body: this.message,
-      //         fname: this.FName,
-      //         fbase64: this.FBase64,
-      //     })
-      //     .then(result => {
-      //         if(result == 'success'){
-      //             this.emailsend = true;
-      //             this.dispatchEvent(new CustomEvent('botclose', {
-      //                 detail: this.emailsend
-      //             }));
-      //             this.dispatchEvent(new CustomEvent('success'));
-      //         }else{
-      //             this.error_toast = true;
-      //             let toast_error_msg = 'Email was not sent, Something went wrong.';
-      //             this.template.querySelector('c-toast-component').showToast('error', toast_error_msg, 3000);
-      //         }
-      //     })
-
-      const value = false;
-      const valueChangeEvent = new CustomEvent("valuechange", {
-          detail: {
-              value
-          }
-      });
-      this.dispatchEvent(valueChangeEvent);
   }
 
-}
+  Support_email(event) {
+    this.email = event.target.value;
+    this.email_msg = true;
+  }
+  Support_message(event) {
+    this.message = event.target.value;
+    this.Message_msg = true;
 
-  
+  }
+  Support_subject(event) {
+    this.subject = event.target.value;
+    this.subject_msg = true;
+
+  }
+  onSubmit() {
+    var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var validation1 = pattern.test(this.email);
+    this.supportname = this.supportname.trim();
+    this.subject = this.subject.trim();
+    this.message = this.message.trim();
+    if ((this.supportname == undefined) || (this.supportname == '')) {
+      this.name_msg = false;
+    } else if (validation1 == false) {
+      this.email_msg = false;
+    } else if (this.subject == undefined || (this.subject == '')) {
+      this.subject_msg = false;
+    } else if (this.message == undefined || (this.message == '')) {
+      this.Message_msg = false;
+    } else {
+      this.email_msg = true;
+      sendemail({
+        name: this.supportname,
+        email: this.email,
+        subject: this.subject,
+        body: this.message
+      })
+        .then(result => {
+          if (result == 'success') {
+            createCase({ subject: this.subject, body: this.message })
+            .then(result => {
+              // Get the newly created record's Id
+              const recordId = result;
+              console.log('recordId',recordId);
+              // Navigate to the newly created record
+              this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: recordId,
+                    objectApiName: 'Case',
+                    actionName: 'view'
+                }
+            });
+            })
+            .catch(error => {
+              console.log('error',error);
+            });
+            this.supportname = '';
+            this.email = '';
+            this.message = '';
+            this.subject = '';
+            // const event = new ShowToastEvent({
+            //   title: 'Success',
+            //   message: 'Action was successful!',
+            //   variant: 'success',
+            // });
+            // this.dispatchEvent(event);
+
+
+          } else {
+            const event = new ShowToastEvent({
+              title: 'Error',
+              message: 'An error occurred.',
+              variant: 'error',
+            });
+            this.dispatchEvent(event);
+          }
+        })
+
+
+    }
+
+  }
+  onClear() {
+    this.supportname = '';
+    this.email = '';
+    this.message = '';
+    this.subject = '';
+    this.name_msg = true;
+    this.email_msg = true;
+    this.subject_msg = true;
+    this.Message_msg = true;
+  }
+
+
 }
