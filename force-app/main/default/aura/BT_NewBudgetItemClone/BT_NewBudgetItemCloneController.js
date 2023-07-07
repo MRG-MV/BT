@@ -10,6 +10,9 @@
             component.set("v.additionalUrl", additionalUrl);
         }
 
+        console.log({additionalUrl});
+        var fromWhereBudgetIsOpen=component.get('v.fromWhereBudgetIsOpen');
+        console.log({fromWhereBudgetIsOpen});
 
         var workspaceAPI = component.find("workspace");
         workspaceAPI.getEnclosingTabId().then((response) => {
@@ -155,6 +158,7 @@
 
         });
         $A.enqueueAction(btadminaction);
+        helper.applyCSSBasedOnURL(component);
 
     },
 
@@ -246,10 +250,18 @@
         workspaceAPI.getFocusedTabInfo().then(function (response) {
             var focusedTabId = response.tabId;
             workspaceAPI.closeTab({ tabId: focusedTabId });
+            $A.get("e.c:BT_SpinnerEvent").setParams({
+                "action": "SHOW"
+            }).fire();
         })
-            .catch(function (error) {
-                console.log(error);
-            });
+        .catch(function (error) {
+            console.log(error);
+        });
+
+       
+
+        
+       
     },
 
 
@@ -2037,6 +2049,8 @@ helper.getProductDetails(component,event,helper);
                     component.set('v.newBudgetLine.buildertek__Sales_Price__c', '');
                     component.set('v.newBudgetLine.buildertek__Cost_Code__c', '');
                     component.set('v.UOMvalues', '');
+                    component.set('v.pricebookName', '');
+
                     //  component.set('v.Notevalues', '');
     
                     $A.enqueueAction(component.get("c.clearLookupValue"));

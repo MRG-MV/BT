@@ -393,17 +393,18 @@ export default base => class GanttToolbar extends base {
         }
     }
     onSaveClick(){
-        console.log(this.gantt.data)
+        // console.log( .data)
         var data = this.gantt.data;
-        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-        console.log('Data => ',{data});
+        // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+        // console.log('Data => ',{data});
         var ganttRowData = [];
         var taskData = JSON.parse(this.gantt.taskStore.json)
         var dependenciesData = JSON.parse(this.gantt.dependencyStore.json)
         var resourceData = JSON.parse(this.gantt.assignmentStore.json)
-        console.log('taskData-->',taskData)
-        console.log('dependenciesData-->',dependenciesData)
-        console.log('resourceData-->',resourceData)
+        // console.log('taskData-->',taskData)
+        // console.log('dependenciesData-->',dependenciesData)
+        // console.log('resourceData-->',resourceData)
+        debugger;
 
     //     var newtaskMap = [];
     //    var taskzero = taskData[0];
@@ -459,7 +460,7 @@ export default base => class GanttToolbar extends base {
                     }
                 }
                 getChildren(taskData[0])
-                console.log(rowData)
+                // console.log(rowData)
                 var updateDataList = [];
                 var updateDataCloneList = [];
                 var insertData = [];
@@ -562,7 +563,7 @@ export default base => class GanttToolbar extends base {
                     updateDataList.push(updateData)
                 }
                 debugger;
-                console.log('updateDataList ==> ',{updateDataList});
+                // console.log('updateDataList ==> ',{updateDataList});
 
                 if(this.gantt.callGanttComponent){
                     if(this.gantt.callGanttComponent.scheduleData){
@@ -613,8 +614,8 @@ export default base => class GanttToolbar extends base {
                     this.gantt.callGanttComponent.createGantt();
                 }
 
-                 console.log(this.gantt.taskStore);
-                 console.log(this.gantt.dependencyStore);
+                //  console.log(this.gantt.taskStore);
+                //  console.log(this.gantt.dependencyStore);
             }
         }
         // eval("$A.get('e.force:refreshView').fire();");
