@@ -620,11 +620,11 @@ public class BT_NewGanttChartCls{
             projectTaskMap.put(pt.Id, pt);
         }
 
-        // for (buildertek__Project_Task__c pt : updatedprojecttaskList) {
-        //     if (pt.buildertek__Dependency__c != null) {     
-        //         pt.buildertek__Lag__c = ProjectTaskTriggerHandler.calculateDuration(projectTaskMap.get(pt.buildertek__Dependency__c).buildertek__Finish__c, pt.buildertek__Start__c)-1;
-        //     }
-        // }
+        for (buildertek__Project_Task__c pt : updatedprojecttaskList) {
+            if (pt.buildertek__Dependency__c != null) {     
+                pt.buildertek__Lag__c = ProjectTaskTriggerHandler.calculateDuration(projectTaskMap.get(pt.buildertek__Dependency__c).buildertek__Finish__c, pt.buildertek__Start__c)-1;
+            }
+        }
 
         for (buildertek__Project_Task__c pt : updatedprojecttaskList) {
             System.debug('New check project task in save changes + '+pt);
