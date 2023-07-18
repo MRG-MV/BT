@@ -555,7 +555,29 @@ public with sharing class bryntumGanttController {
         return pickListValuesList;
     }
 
+    @AuraEnabled
+    public static String upsertDataOnSaveChanges(String scheduleRecordStr, String taskRecordsStr){
+        String msg;
+        buildertek__Schedule__c scheduleRecord = (buildertek__Schedule__c)System.JSON.deserialize(scheduleRecordStr, buildertek__Schedule__c.class);
+        List<buildertek__Project_Task__c> taskRecords = (List<buildertek__Project_Task__c>)System.JSON.deserialize(taskRecordsStr, List<buildertek__Project_Task__c>.class);
 
+        try {
+            System.debug('scheduleRecord '+scheduleRecord);
+            for (buildertek__Project_Task__c task : taskRecords) {
+                System.debug('new tasks on save changes '+taskRecords);
+            }
+            update scheduleRecord;
+            upsert taskRecords;
+            msg = 'Success';
+        } catch (Exception e) {
+
+            System.debug('Exception e '+e);
+            System.debug('Exception e '+e.getMessage());
+            System.debug('Exception e '+e.getLineNumber());
+            msg = e.getMessage() + ' ' + e.getLineNumber();
+        }
+        return msg;
+    }
 
     /* @Author        Karan Patel
      * Date           10-7-23
@@ -629,19 +651,19 @@ public with sharing class bryntumGanttController {
                 if (Masterscheduleitem.buildertek__Dependency__c == null) {
                     System.debug('Dependency Condition: ');
                     newSchItem.buildertek__Start__c = initialStartDate;
-                    newSchItem.buildertek__Finish__c = addDaysSkippingWeekends(businessHourId, newSchItem.buildertek__Start__c, Integer.valueOf(Masterscheduleitem.buildertek__Duration__c));
+                    newSchItem.buildertek__Finish__c = addDaysSkippingWeekends(newSchItem.buildertek__Start__c, Integer.valueOf(Masterscheduleitem.buildertek__Duration__c));
                 } else {
                     System.debug('Dependency Condition else: ');
                     if (projectInsertTaskMap.containsKey(Masterscheduleitem.buildertek__Dependency__c)) {
                         System.debug('Dependency Condition !=null: ');
                         Date dependencyFinishDate = projectInsertTaskMap.get(Masterscheduleitem.buildertek__Dependency__c).buildertek__Finish__c;
-                        Date startDate = dependencyFinishDate.addDays(1);
+                        Date startDate = dependencyFinishDate;
                         newSchItem.buildertek__Start__c = startDate;
-                        newSchItem.buildertek__Finish__c = addDaysSkippingWeekends(businessHourId, newSchItem.buildertek__Start__c, Integer.valueOf(Masterscheduleitem.buildertek__Duration__c));
+                        newSchItem.buildertek__Finish__c = addDaysSkippingWeekends(newSchItem.buildertek__Start__c, Integer.valueOf(Masterscheduleitem.buildertek__Duration__c));
                     } else {
                         System.debug('Dependency Condition ==null: ');
                         newSchItem.buildertek__Start__c = initialStartDate;
-                        newSchItem.buildertek__Finish__c = addDaysSkippingWeekends(businessHourId, newSchItem.buildertek__Start__c, Integer.valueOf(Masterscheduleitem.buildertek__Duration__c));
+                        newSchItem.buildertek__Finish__c = addDaysSkippingWeekends(newSchItem.buildertek__Start__c, Integer.valueOf(Masterscheduleitem.buildertek__Duration__c));
                     }
                 }
 
@@ -751,27 +773,18 @@ public with sharing class bryntumGanttController {
      */
 
     // Skip weekend and calculate date
-	public static Date addDaysSkippingWeekends(String businessHourId, Date startDate, Integer duration){
-        // Long range = (7) * 24 * 60 * 60 * 1000;
-        // Date finishDate = System.BusinessHours.add(businessHourId, startDate.addDays(duration), range).date();
-        // System.debug('finishDate:'+ finishDate);
-        // return finishDate;
 
-        Date startDates = Date.newInstance(startDate.year(), startDate.month(), startDate.day());
-        Integer addedDays = 0;
-
-        while (addedDays < duration) {
-            startDates = startDates.addDays(1);
-            DateTime currentDate = DateTime.newInstance(startDates.year(), startDates.month(), startDates.day());
-            String todayDay = currentDate.format('EEEE');
-            if (todayDay != 'Saturday' && todayDay != 'Sunday') {
-                ++addedDays;
-            }
-        }
-
-        Date endDate = startDates.addDays(-1);
-        System.debug('Final endDate: ' + endDate);
-        return endDate;
-	}
-
+    public static Date addDaysSkippingWeekends(Date startDate, Integer duration){
+		Date result = startDate;
+		Integer addedDays = 0;
+		while (addedDays < duration){
+			result = result.addDays(1);
+			DateTime currentDate = DateTime.newInstance(result.year(), result.month(), result.day());
+			String todayDay = currentDate.format('EEEE');
+			if (todayDay != 'Saturday' && todayDay != 'Sunday'){
+				++addedDays;
+			}
+		}
+		return result;
+    }
 }

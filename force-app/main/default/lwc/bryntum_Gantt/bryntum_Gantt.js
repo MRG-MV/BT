@@ -907,10 +907,10 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     }
     newTaskeDate = dt.toLocaleDateString().split("/");
     this.newTaskRecordCreate["buildertek__Start__c"] =
-    dt.getFullYear() + "-" + Number(dt.getMonth() + 1) + "-" + dt.getDate();
+      dt.getFullYear() + "-" + Number(dt.getMonth() + 1) + "-" + dt.getDate();
     this.newTaskRecordCreate["buildertek__Duration__c"] = 1;
     this.newTaskRecordCreate["buildertek__Finish__c"] =
-    this.newTaskRecordCreate["buildertek__Start__c"];
+      this.newTaskRecordCreate["buildertek__Start__c"];
     this.newTaskRecordCreate["buildertek__Completion__c"] = 0;
     this.newTaskRecordCreate["buildertek__Lag__c"] = 0;
     this.blankPredecessor = false;
