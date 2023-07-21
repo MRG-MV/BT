@@ -1,7 +1,7 @@
 import { LightningElement, track, api } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import insertData from "@salesforce/apex/importScheduleLineController.insertData";
-export default class FileUploadComponent extends LightningElement {
+export default class importScheduleLine extends LightningElement {
     fileName;
     fileContent;
     showError = false;
@@ -10,6 +10,7 @@ export default class FileUploadComponent extends LightningElement {
     @track files;
     @track isOpen;
     @api recordid;
+    @api showImportPopup
     // @track BaseURLs;
     // @track isNewGantt;
 
@@ -282,14 +283,11 @@ export default class FileUploadComponent extends LightningElement {
 
     CreateAccount(jsonstr) {
         const jsonData = JSON.parse(jsonstr);
-        const recordId = this.recordid;
         // const action = this.insertData;
         console.log("CSV File:", JSON.stringify(jsonData));
-        let dummyRecordId = 'a101K00000GobT6QAJ';
-
+        console.log('Create Account Sch recordId',this.recordid);
         insertData({
-            // recordId: this.recordid,
-            recordId: dummyRecordId,
+            recordId: this.recordid,
             strFileData: JSON.stringify(jsonData),
         })
             .then((response) => {
@@ -493,5 +491,13 @@ export default class FileUploadComponent extends LightningElement {
                 };
             }
         }
+    }
+
+    hideModalBox1() {
+        this.dispatchEvent(new CustomEvent('hidemodel', {
+            detail: {
+                message: false
+            }
+        }));
     }
 }

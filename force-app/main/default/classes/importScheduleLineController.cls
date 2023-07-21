@@ -1,4 +1,4 @@
-public with sharing class importScheduleLineController {
+public without sharing class importScheduleLineController {
     @AuraEnabled
     public static string insertData(String recordId, String strFileData){
         String returnresponse = '';

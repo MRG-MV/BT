@@ -15,10 +15,10 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
 
     var taskListForPhase = scheduleItemsDataList;
     var firstRowDup = {};
-    console.log('taskListForPhase :- ' + JSON.parse(JSON.stringify(taskListForPhase)));
+    console.log('taskListForPhase :- ' , JSON.parse(JSON.stringify(taskListForPhase)));
     firstRowDup["id"] = scheduleData.Id;
-    firstRowDup["name"] = scheduleData.Name
-    firstRowDup["startDate"] = ""
+    firstRowDup["name"] = scheduleData.buildertek__Description__c;
+    firstRowDup["startDate"] = scheduleData.startDate
     firstRowDup["expanded"] = true
     firstRowDup["type"] = 'Project'
     firstRowDup['customtype'] = 'Project'
@@ -495,7 +495,18 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
     let dataToPassIntoApex = {};
     let scheduleObj = {};
     var rowData = [];
+    const phasedatamap = new Map();
     if (data) {
+        data.forEach(element => {
+            if(element.hasOwnProperty('NewPhase')){
+                console.log('element --> ',JSON.parse(JSON.stringify(element)));
+                console.log('in has phase as propertry');
+                console.log('element id --> ',element.id);
+                console.log('element newphase --> ',element.NewPhase);
+                phasedatamap.set(element.id, element.NewPhase);
+                console.log('phasedatamap -->', phasedatamap);
+            }
+        });
         if (data.length > 1) {
             function getChildren(data) {
                 if (data.children) {
@@ -509,6 +520,7 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
             for (let j = 0; j < taskData.length; j++) {
                 getChildren(taskData[j])
             }
+            console.log('rowdata:- ', rowData);
             var updateDataList = [];
             var updateDataCloneList = [];
             for (var i = 0; i < rowData.length; i++) {
@@ -528,7 +540,8 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                     updateData['Id'] = rowData[i]['id']
                 }
                 updateData['buildertek__Schedule__c'] = taskData[0].id;
-                updateData['Name'] = rowData[i]['name']
+                updateData['Name'] = rowData[i]['name'];
+
                 updateData['buildertek__Order__c'] = i + 1;
                 //var startdate = new Date(rowData[i]['startDate'])
                 // console.log('test',new Date(rowData[i]['endDate']).toLocaleDateString())
@@ -572,6 +585,7 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                     }
                 }
 
+
                 var filledDependency = false
                 for (var j = 0; j < dependenciesData.length; j++) {
                     if (dependenciesData[j]['to'] == rowData[i]['id']) {
@@ -585,6 +599,12 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                     if (!filledDependency) {
                         updateData['buildertek__Dependency__c'] = null;
                     }
+                }
+                console.log('phasedatamap -->', phasedatamap);
+                console.log('hasownproperty updateData -->', updateData.Id );
+                if(phasedatamap.has(updateData.Id)){
+                    console.log('updating phase data');
+                    updateData['buildertek__Phase__c'] = phasedatamap.get(updateData.Id);
                 }
                 updateDataClone = Object.assign({}, updateData);
                 // console.log(updateDataClone);
