@@ -29,6 +29,9 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
   @track scheduleItemsDataList;
   @track scheduleData;
   @track scheduleItemsData;
+
+  @track error_toast = true;
+
   @api SchedulerId;
   @api isLoading = false;
   @api showExportPopup;
@@ -352,6 +355,13 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
           "error message to get while getting data from apex:- ",
           error.message
         );
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: "Error",
+            message: "Something went Wrong",
+            variant: "error",
+          })
+          );
       });
   }
 
@@ -1152,7 +1162,13 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
   //* calling toast message method
   showToastMessage(message) {
     console.log("show toast message method");
-    bryntum.gantt.Toast.show(message);
+    this.dispatchEvent(
+      new ShowToastEvent({
+        title: "Warning",
+        message: message,
+        variant: "warning",
+      })
+    );
   }
 
   //* calling this method on save changes
@@ -1162,6 +1178,30 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       this.scheduleItemsDataList,
       taskData
     ); //!helper method to get list of string to delete
+
+    console.log('taskdata:- ',taskData);
+    taskData.forEach(newTaskRecord => {
+      // console.log('newTaskRecord in recordtobedeleted :- ',newTaskRecord);
+      // if(newTaskRecord.Id == "DemoGenretedId"){
+      //     delete newTaskRecord.Id;
+      // }
+      console.log('infor loop newTaskrecord');
+      var demoidvar = newTaskRecord.Id
+      console.log('demoidvar:- ',demoidvar);
+      if(demoidvar != undefined || demoidvar != null){
+        if(demoidvar.includes("DemoGenretedId")){
+          console.log('newTaskRecord:- ',newTaskRecord);
+          const index = taskData.indexOf(newTaskRecord);
+          taskData.splice(index, 1);
+          console.log('taskData:- ',taskData);
+          delete newTaskRecord.Id
+          taskData.push(newTaskRecord);
+          console.log('newTaskRecord2:- ',newTaskRecord);
+        }
+      }
+      });
+
+
     var that = this;
     upsertDataOnSaveChanges({
       scheduleRecordStr: JSON.stringify(scheduleData),
@@ -1170,11 +1210,31 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     })
       .then(function (response) {
         console.log("response ", { response });
-        that.handleHideSpinner();
+        console.log("response ", response);
+        debugger
+        if(response == "Success"){
+          that.dispatchEvent(
+            new ShowToastEvent({
+              title: "Success",
+              message: "Save changes Successfully",
+              variant: "success",
+            })
+          );
+          let intervalID = setInterval(() => {
+            window.location.reload();
+          }, 1000);
+        } else{
+          that.dispatchEvent(
+            new ShowToastEvent({
+              title: "Error",
+              message: "Something Went Wrong",
+              variant: "error",
+            })
+            );
+            that.handleHideSpinner();
+        }
         // that.connectedCallback();
-        refreshApex(that.SchedulerId);
         // that.getScheduleWrapperDataFromApex();
-        window.location.reload();
       })
       .catch((error) => {
         console.log("error --> ", {

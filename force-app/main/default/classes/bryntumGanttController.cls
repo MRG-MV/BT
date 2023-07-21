@@ -197,7 +197,7 @@ public with sharing class bryntumGanttController {
 
         system.debug('Schedule Items ::' + dataTableDtls.lstOfSObjs);
         system.debug('Schedule Item ::' + dataTableDtls);
-        buildertek__Schedule__c schedulerec = [Select Id, Name, buildertek__Description__c, buildertek__Gantt_Draw_Dependencies__c, buildertek__Gantt_Highlight_Non_Working_Time__c, buildertek__Gantt_Project_Lines__c, buildertek__Gantt_Task_Labels__c, buildertek__Hide_Gantt_Schedule__c, buildertek__Project__c, buildertek__Project__r.Name
+        buildertek__Schedule__c schedulerec = [Select Id, Name, buildertek__Description__c, buildertek__Gantt_Draw_Dependencies__c, buildertek__Gantt_Highlight_Non_Working_Time__c, buildertek__Gantt_Project_Lines__c, buildertek__Gantt_Task_Labels__c, buildertek__Hide_Gantt_Schedule__c,buildertek__Initial_Start_Date__c, buildertek__Project__c, buildertek__Project__r.Name
                                             from buildertek__Schedule__c
                                             Where Id = :scheduleid];
         dataTableDtls.scheduleObj = schedulerec;
@@ -602,7 +602,7 @@ public with sharing class bryntumGanttController {
             System.debug('initialStartDate: ' + initialStartDate);
         }
         System.debug('initialStartDate: outif' + initialStartDate);
-        System.debug('date.parse(initialStartDate.format()):- '+date.parse(initialStartDate.format()));
+
         buildertek__Schedule__c schedule = new buildertek__Schedule__c(
             buildertek__Description__c = description,
             buildertek__Initial_Start_Date__c = date.parse(initialStartDate.format()),
@@ -612,18 +612,35 @@ public with sharing class bryntumGanttController {
         );
         insert schedule;
         String pageUrl = schedule.Id;
-
-        buildertek__Project_Task__c newSchItem = new buildertek__Project_Task__c();
-        newSchItem.Name = 'New task';
-        newSchItem.buildertek__Schedule__c = schedule.Id;
-        newSchItem.buildertek__Duration__c = 1;
-        if (initialStartDate != null){
-            newSchItem.buildertek__Start__c = initialStartDate;
-        } else{
-            newSchItem.buildertek__Start__c = Date.today();
-        }
-        insert newSchItem;
-        System.debug('newSchItem: ' + newSchItem);
+        // if(masterId != null){
+        //     List<buildertek__Project_Task__c> scheduleTaskList = new List<buildertek__Project_Task__c>([SELECT Id, buildertek__Schedule__c,Name from buildertek__Project_Task__c WHERE buildertek__Schedule__c =: masterId]);
+        //     System.debug('scheduleTaskList: ' + scheduleTaskList);
+        //     if(scheduleTaskList.size() <= 0){
+        //         buildertek__Project_Task__c newSchItem = new buildertek__Project_Task__c();
+        //         newSchItem.Name = 'New task';
+        //         newSchItem.buildertek__Schedule__c = schedule.Id;
+        //         newSchItem.buildertek__Duration__c = 1;
+        //         if (initialStartDate != null){
+        //             newSchItem.buildertek__Start__c = initialStartDate;
+        //         } else{
+        //             newSchItem.buildertek__Start__c = Date.today();
+        //         }
+        //         insert newSchItem;
+        //         System.debug('newSchItem: ' + newSchItem);
+        //     }
+        // } else {
+        //     buildertek__Project_Task__c newSchItem = new buildertek__Project_Task__c();
+        //     newSchItem.Name = 'New task';
+        //     newSchItem.buildertek__Schedule__c = schedule.Id;
+        //     newSchItem.buildertek__Duration__c = 1;
+        //     if (initialStartDate != null){
+        //         newSchItem.buildertek__Start__c = initialStartDate;
+        //     } else{
+        //         newSchItem.buildertek__Start__c = Date.today();
+        //     }
+        //     insert newSchItem;
+        //     System.debug('newSchItem: ' + newSchItem);
+        // }
 
         if(masterId != null || masterId != ''){
             createScheduleLineFromMasterSchedule(schedule.Id, masterId, initialStartDate);

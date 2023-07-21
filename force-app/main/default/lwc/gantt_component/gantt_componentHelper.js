@@ -18,7 +18,8 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
     console.log('taskListForPhase :- ' , JSON.parse(JSON.stringify(taskListForPhase)));
     firstRowDup["id"] = scheduleData.Id;
     firstRowDup["name"] = scheduleData.buildertek__Description__c;
-    firstRowDup["startDate"] = scheduleData.startDate
+    firstRowDup["startDate"] = scheduleData.buildertek__Initial_Start_Date__c;
+    console.log('scheduleData.startDate ',scheduleData.startDate);
     firstRowDup["expanded"] = true
     firstRowDup["type"] = 'Project'
     firstRowDup['customtype'] = 'Project'
@@ -221,6 +222,7 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
                 if(taskListForPhase[i].buildertek__Indent_Task__c){
                 rowChilObj["iconCls"] = "b-fa b-fa-arrow-left indentTrue"
             }
+            console.log('taskListForPhase[i].buildertek__Phase__c ',taskListForPhase[i].buildertek__Phase__c);
             rowChilObj['phase'] = taskListForPhase[i].buildertek__Phase__c
                 if(taskListForPhase[i].buildertek__Dependency__c){
                 rowChilObj["constraintType"] = ''
@@ -288,6 +290,7 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
 
             rowChilObj["expanded"] = true
             rowChilObj["order"] = taskListForPhase[i].buildertek__Order__c
+
             var dependencyRow = {};
                 if(taskListForPhase[i].buildertek__Dependency__c){
                     dependencyRow["id" ]  = taskListForPhase[i].Id+'_'+taskListForPhase[i].buildertek__Dependency__c
@@ -337,7 +340,8 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
                 assignmentRowData.push(assignmentRow)
             }
             taskPhaseRow["children"].push(rowChilObj);
-            console.log(taskPhaseRow)
+            console.log('taskPhaseRow ',taskPhaseRow)
+            firstRowDup['children'].push(taskPhaseRow);
             newPhaseFlag = false;
         }else if(!taskListForPhase[i].buildertek__Phase__c){
             console.log('method 3 in helper');
@@ -475,6 +479,7 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
         }
 
     }
+    console.log('firstRowDup ',firstRowDup);
     rows.push(firstRowDup);
     formattedData['rows'] = rows;
     formattedData['resourceRowData'] = resourceRowData;
@@ -507,7 +512,7 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                 console.log('phasedatamap -->', phasedatamap);
             }
         });
-        if (data.length > 1) {
+        if (data.length > 0) {
             function getChildren(data) {
                 if (data.children) {
                     for (var i = 0; i < data.children.length; i++) {
@@ -606,6 +611,16 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                     console.log('updating phase data');
                     updateData['buildertek__Phase__c'] = phasedatamap.get(updateData.Id);
                 }
+                const keys = phasedatamap.keys();
+                for (const key of keys) {
+                    if(updateData.Id == undefined){
+                        updateData['Id'] = 'DemoGenretedId';
+                        updateData['buildertek__Phase__c'] = phasedatamap.get(key);
+                    }
+                }
+
+                console.log('DemoGenretedId updateData:- ',{updateData});
+
                 updateDataClone = Object.assign({}, updateData);
                 // console.log(updateDataClone);
                 /* for (var j = 0; j < resourceData.length; j++) {
@@ -648,6 +663,10 @@ function recordsTobeDeleted(oldListOfTaskRecords, newListOfTaskRecords) {
     const setOfNewRecordId = new Set();
     const listOfRecordIdToBeDeleted = [];
     newListOfTaskRecords.forEach(newTaskRecord => {
+        // console.log('newTaskRecord in recordtobedeleted :- ',newTaskRecord);
+        // if(newTaskRecord.Id == "DemoGenretedId"){
+        //     delete newTaskRecord.Id;
+        // }
         setOfNewRecordId.add(newTaskRecord.Id);
     });
 
@@ -656,7 +675,7 @@ function recordsTobeDeleted(oldListOfTaskRecords, newListOfTaskRecords) {
             listOfRecordIdToBeDeleted.push(oldTaskRecord.Id);
         }
     });
-
+    console.log('listOfRecordIdToBeDeleted:- ',listOfRecordIdToBeDeleted);
     return listOfRecordIdToBeDeleted;
 }
 
