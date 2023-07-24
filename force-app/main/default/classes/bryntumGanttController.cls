@@ -731,8 +731,10 @@ public with sharing class bryntumGanttController {
         }
 
         ProjectTaskTriggerHandler.blnSkipTaskTrigger = true;
+        ProjectTaskTriggerHandler.newSchedule = true;
         insert projectInsertTaskMap.values();
         ProjectTaskTriggerHandler.blnSkipTaskTrigger = false;
+        ProjectTaskTriggerHandler.newSchedule = false;
 
         for (String key : predecessorMap.keySet()) {
             projectInsertTaskMap.get(key).buildertek__Dependency__c = projectInsertTaskMap.get(predecessorMap.get(key)).Id;
@@ -743,8 +745,10 @@ public with sharing class bryntumGanttController {
         // In :recordIds];
 
         ProjectTaskTriggerHandler.blnSkipTaskTrigger = true;
+        ProjectTaskTriggerHandler.newSchedule = true;
         update projectInsertTaskMap.values();
         ProjectTaskTriggerHandler.blnSkipTaskTrigger = false;
+        ProjectTaskTriggerHandler.newSchedule = false;
 
 
         // Adding Milestone to schedule
@@ -798,8 +802,10 @@ public with sharing class bryntumGanttController {
 
         System.debug('Project Task::' + projectMilestoneInsert);
         ProjectTaskTriggerHandler.blnSkipTaskTrigger = true;
+        ProjectTaskTriggerHandler.newSchedule = true;
         insert projectMilestoneInsert;
         ProjectTaskTriggerHandler.blnSkipTaskTrigger = false;
+        ProjectTaskTriggerHandler.newSchedule = false;
     }
 
     /* @Author        Karan Patel
@@ -809,7 +815,7 @@ public with sharing class bryntumGanttController {
 
     // Skip weekend and calculate date
 	public static Date addDaysSkippingWeekends(String businessHourId, Date startDate, Integer duration){
-        // Long range = (7) * 24 * 60 * 60 * 1000;
+        // Long range = (5) * 24 * 60 * 60 * 1000;
         // Date finishDate = System.BusinessHours.add(businessHourId, startDate.addDays(duration), range).date().addDays(-1);
         // System.debug('finishDate:'+ finishDate);
         // return finishDate;
@@ -817,7 +823,7 @@ public with sharing class bryntumGanttController {
         Date startDates = Date.newInstance(startDate.year(), startDate.month(), startDate.day());
         Integer addedDays = 0;
 
-        while (addedDays < duration) {
+        while (addedDays < duration-1) {
             startDates = startDates.addDays(1);
             DateTime currentDate = DateTime.newInstance(startDates.year(), startDates.month(), startDates.day());
             String todayDay = currentDate.format('EEEE');
@@ -826,7 +832,7 @@ public with sharing class bryntumGanttController {
             }
         }
 
-        Date endDate = startDates.addDays(-1);
+        Date endDate = startDates;
         System.debug('Final endDate: ' + endDate);
         return endDate;
 	}

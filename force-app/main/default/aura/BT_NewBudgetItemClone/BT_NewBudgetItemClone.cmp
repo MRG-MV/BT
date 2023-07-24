@@ -363,7 +363,7 @@
                                                     <lightning:button label="Add Expense" onclick="{!c.addExpense}" class="sldsButtonGroup" />
                                                     <lightning:button label="Add PO" onclick="{!c.addPO}" class="sldsButtonGroup" />
                                                     <lightning:button label="Add CO" onclick="{!c.addCO}" class="sldsButtonGroup" />
-                                        <lightning:button label="Add Invoice" onclick="{!c.addInvoice}" class="sldsButtonGroup" />
+                                        <lightning:button label="Add Invoice (AP)" onclick="{!c.addInvoice}" class="sldsButtonGroup" />
                                         <lightning:button label="Add Labor" onclick="{!c.addTimeCard}" class="sldsButtonGroup" />
                                         <lightning:button iconPosition="left" onclick="{!c.onClickAddlines}" label="New Budget Lines" class="sldsButtonGroup" />
                                         <!-- <lightning:button label="Add Product" onclick="{!c.addProduct}" class="sldsButtonGroup" />-->

@@ -1375,7 +1375,7 @@
                 "message": "Please Select at least One Budget Line to Create PO.",
                 closeCallback: function () { }
             });
-            $A.get('e.force:refreshView').fire();
+            // $A.get('e.force:refreshView').fire();
 
         }
     },

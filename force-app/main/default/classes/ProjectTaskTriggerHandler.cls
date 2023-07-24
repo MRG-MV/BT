@@ -1100,7 +1100,12 @@ public class ProjectTaskTriggerHandler{
 			System.debug('insertUpdate milestones duration ==> ' + schItem.buildertek__Duration__c + ' id ' + schItem.Id);
 
 		}
-		
+		// Map<Id, Project_Task__c> newProjectTaskMap = new Map<Id, Project_Task__c>([select Id, Name, buildertek__Start__c, buildertek__Finish__c, buildertek__Duration__c, buildertek__Dependency__c, buildertek__Dependency__r.buildertek__Schedule_Item_Dependency_Path__c, buildertek__Schedule_Item_Dependency_Path__c, buildertek__Schedule__c, buildertek__Milestone__c, buildertek__Phase__c, buildertek__Type__c, isDeleted
+		//                                                                            from buildertek__Project_Task__c
+		//                                                                            where buildertek__Schedule__c IN:scheduleIds
+		//                                                                            Order by buildertek__Order__c
+		//                                                                            NULLS LAST, CreatedDate ASC]);
+
 		Map<Id, Project_Task__c> newProjectTaskMap = new Map<Id, Project_Task__c>([select Id, Name, buildertek__Start__c, buildertek__Finish__c, buildertek__Duration__c, buildertek__Dependency__c, buildertek__Dependency__r.buildertek__Schedule_Item_Dependency_Path__c, buildertek__Schedule_Item_Dependency_Path__c, buildertek__Schedule__c, buildertek__Milestone__c, buildertek__Phase__c, buildertek__Type__c, isDeleted,buildertek__Lag__c
 		                                                                           from buildertek__Project_Task__c
 		                                                                           where buildertek__Schedule__c IN:scheduleIds
@@ -1648,8 +1653,10 @@ public class ProjectTaskTriggerHandler{
 		if (listAccs.size() > 0){
 			ScheduleTriggerHandler schdulehandlerCustom = new ScheduleTriggerHandler(true, listAccs.size());
 			schdulehandlerCustom.blnSkipTaskTrigger = true;
+			schdulehandlerCustom.newSchedule = true;
 			update listAccs;
 			schdulehandlerCustom.blnSkipTaskTrigger = false;
+			schdulehandlerCustom.newSchedule = false;
 		}
 	}
 

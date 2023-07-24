@@ -9,14 +9,7 @@ public without sharing class importScheduleLineController {
 
         buildertek__Schedule__c mainScheduleRec;
         if(String.isNotBlank(recordId)){
-            mainScheduleRec = [SELECT Id,
-                               Name,
-                               buildertek__Initial_Start_Date__c,
-                               buildertek__Start_Date__c,
-                               buildertek__End_Date__c,
-                               buildertek__Original_Start_Date__c,
-                               buildertek__Original_End_Date__c
-                               FROM buildertek__Schedule__c WHERE Id =:recordId limit 1];
+            mainScheduleRec = [SELECT Id, Name, buildertek__Initial_Start_Date__c, buildertek__Start_Date__c, buildertek__End_Date__c, buildertek__Original_Start_Date__c, buildertek__Original_End_Date__c FROM buildertek__Schedule__c WHERE Id =:recordId limit 1];
         }
         
         list<buildertek__Project_Task__c> existedScheduleitems = new list<buildertek__Project_Task__c>();
@@ -96,8 +89,16 @@ public without sharing class importScheduleLineController {
                 for (fieldWrapper wrapper : datalist){
                     System.debug('wrapper.Dependency ==> '+wrapper.Dependency);
                     if(String.isNotBlank(wrapper.Dependency)){
-                        System.debug('projectInsertTaskMap.get(wrapper.Dependency).Id ==> '+projectInsertTaskMap.get(wrapper.Dependency).Id);
-                        projectInsertTaskMap.get(wrapper.Name).buildertek__Dependency__c = projectInsertTaskMap.get(wrapper.Dependency).Id;
+                        if(projectInsertTaskMap.containsKey(wrapper.Dependency)){
+                            system.debug('inside If => ' + projectInsertTaskMap.get(wrapper.Dependency).Id);
+                            projectInsertTaskMap.get(wrapper.Name).buildertek__Dependency__c = projectInsertTaskMap.get(wrapper.Dependency).Id;
+
+                        }
+                        else{
+                            system.debug(wrapper.Dependency + ' This Dependany not present');
+                        }
+                    //     System.debug('projectInsertTaskMap.get(wrapper.Dependency).Id ==> '+projectInsertTaskMap.get(wrapper.Dependency).Id);
+                    //         System.debug('Dependency If '+ projectInsertTaskMap.get(wrapper.Dependency));
                     }
                 }
 
