@@ -1653,10 +1653,8 @@ public class ProjectTaskTriggerHandler{
 		if (listAccs.size() > 0){
 			ScheduleTriggerHandler schdulehandlerCustom = new ScheduleTriggerHandler(true, listAccs.size());
 			schdulehandlerCustom.blnSkipTaskTrigger = true;
-			schdulehandlerCustom.newSchedule = true;
 			update listAccs;
 			schdulehandlerCustom.blnSkipTaskTrigger = false;
-			schdulehandlerCustom.newSchedule = false;
 		}
 	}
 

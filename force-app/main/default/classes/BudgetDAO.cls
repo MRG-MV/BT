@@ -3059,6 +3059,38 @@ buildertek__Budget__c budgetCopy = Database.query(query);*/
         update purchaseOrders;
     }
 
+    @AuraEnabled
+    public static list<buildertek__Billings__c> getSalesInvoice(String budgetId){
+        try {
+            String ProjectId = [SELECT Id, Name, buildertek__Project__c FROM  buildertek__Budget__c WHERE Id =: budgetId].buildertek__Project__c;
+            list<buildertek__Billings__c> salesInvoiceList = [SELECT Id, Name, buildertek__Budget__r.Name, buildertek__Project__r.Name, buildertek__Project__c, buildertek__Terms__c, buildertek__Amount__c, buildertek__Total_Amount_Tax__c  FROM buildertek__Billings__c WHERE buildertek__Project__c =: ProjectId AND buildertek__Budget__c = null];
+            return salesInvoiceList;
+        } catch (Exception e) {
+            System.debug('error in getSalesInvoice => ' + e.getMessage() + ' at line no : '+ e.getLineNumber() );
+            return null;
+        }
+    }
+
+    @AuraEnabled
+    public static string UpdateSalesInvoices(list<String> SLIDlist, String BudgetId){
+        try {
+            list<buildertek__Billings__c> slToUpdate = new list<buildertek__Billings__c>();
+            if(SLIDlist.size() > 0){
+                list<buildertek__Billings__c> slIDs = [SELECT Id, Name FROM buildertek__Billings__c WHERE Id IN : SLIDlist];
+                for(buildertek__Billings__c sl : slIDs){
+                    sl.buildertek__Budget__c = BudgetId;
+                    slToUpdate.add(sl);
+                }
+                    update slToUpdate;
+                return 'Sucesss';
+            }
+            return null;
+        } catch (Exception e) {
+            System.debug('error in UpdateSalesInvoice => ' + e.getMessage() + ' at line no : '+ e.getLineNumber() );
+            return null;
+        }
+    }
+
 
 
 
