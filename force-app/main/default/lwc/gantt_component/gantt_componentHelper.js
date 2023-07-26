@@ -552,6 +552,7 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
 
                 rowData[i].endDate = endDate;
                 if (rowData[i]['id'].indexOf('_generate') == -1) {
+                    console.log('In rowdata id to update data id :- ',rowData[i]['id']);
                     updateData['Id'] = rowData[i]['id']
                 }
                 updateData['buildertek__Schedule__c'] = taskData[0].id;
@@ -596,6 +597,7 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                 if (rowData[i]['parentId']) {
                     // console.log(rowData[i]['parentId'])
                     if (rowData[i]['parentId'].split('_')[1]) {
+                        console.log('test log 1:- ',rowData[i]['parentId'].split('_')[1]);
                         updateData['buildertek__Phase__c'] = rowData[i]['parentId'].split('_')[1]
                     }
                 }
@@ -619,13 +621,15 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                 console.log('hasownproperty updateData -->', updateData.Id );
                 if(phasedatamap.has(updateData.Id)){
                     console.log('updating phase data');
+                    console.log('updateddata id :- ',phasedatamap.get(updateData.Id));
                     updateData['buildertek__Phase__c'] = phasedatamap.get(updateData.Id);
                 }
                 const keys = phasedatamap.keys();
                 for (const key of keys) {
-                    if(updateData.Id == undefined){
-                        updateData['Id'] = 'DemoGenretedId';
+                    if(updateData.Id == undefined ){
+                        console.log('updateddata id :- ',phasedatamap.get(updateData.Id));
                         updateData['buildertek__Phase__c'] = phasedatamap.get(key);
+                        updateData['Id'] = 'DemoGenretedId';
                     }
                 }
 
