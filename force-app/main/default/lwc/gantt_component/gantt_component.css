@@ -2,6 +2,14 @@
     height : 81vh;
 }
 
+.b-field-inner{
+    border:none !important
+}
+
+/* .b-field-inner:focus{
+    background-color: rgba(254,172,49,0.25) !important;
+} */
+
 .b-float-root {
     z-index: 100;
 }

@@ -273,7 +273,8 @@
      <aura:attribute name="salesInvoices" type="Billings__c[]" />
      <aura:attribute name="selectedSalesInvoices" type="List" default="[]" access="public"/>
      <aura:attribute name="allSLChecked" type="boolean" default="false" />
-     <!-- Add Sales Invoice Data Start -->
+     <lightning:navigation aura:id="navService" />
+     <!--  End -->
 
 
     <force:recordData aura:id="newforcerecord" layoutType="FULL" recordId="{!v.recordId}" targetRecord="{!v.newRecord}" targetFields="{!v.sampleNewRecord}" targetError="{!v.newRecordError}" />
@@ -372,7 +373,7 @@
                                                     <lightning:button label="Add PO" onclick="{!c.addPO}" class="sldsButtonGroup" />
                                                     <lightning:button label="Add CO" onclick="{!c.addCO}" class="sldsButtonGroup" />
                                                     <lightning:button label="Add Invoice (AP)" onclick="{!c.addInvoice}" class="sldsButtonGroup" />
-                                                    <lightning:button label="Add Sales Inovice" onclick="{!c.addSalesInvoice}" class="sldsButtonGroup" />
+                                                    <lightning:button label="Add Sales Invoice" onclick="{!c.addSalesInvoice}" class="sldsButtonGroup" />
                                         <lightning:button label="Add Labor" onclick="{!c.addTimeCard}" class="sldsButtonGroup" />
                                         <lightning:button iconPosition="left" onclick="{!c.onClickAddlines}" label="New Budget Lines" class="sldsButtonGroup" />
                                         <!-- <lightning:button label="Add Product" onclick="{!c.addProduct}" class="sldsButtonGroup" />-->
@@ -389,6 +390,12 @@
                                         <!-- <lightning:button label="Import CSV" onclick="{!c.importCSV}"/> -->
                                         <!--  <lightning:button label="Save" onclick="{!c.saveQuoteItems}"/> -->
                                         <lightning:button label="Delete Lines" onclick="{!c.deleteSelectedBudgetItem}" class="sldsButtonGroup" />
+                                        <aura:if isTrue="{!v.isbudget}">
+                                            <!-- <a href="{!v.fromWhereBudgetIsOpen}" onclick="{!c.closetab}" class="sldsButtonGroup"> -->
+                                                <lightning:button label="Cancel" onclick="{!c.closetabs}" class="sldsButtonGroup" /> 
+                                            <!-- </a> -->
+                                                
+                                        </aura:if>
                                         <!--</aura:if>-->
                                         <!--<div class="slds-align_absolute-center">-->
                                         <aura:if isTrue="{!v.showButtons}">

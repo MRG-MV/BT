@@ -27,8 +27,6 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
     firstRowDup["children"] = []
     firstRowDup["constraintType"] = 'startnoearlierthan'
     firstRowDup["constraintDate"] = ""
-    firstRowDup["eventColor"] = 'red'
-    firstRowDup["eventStyle"] = 'border'
     var newPhaseFlag = true;
     var taskWithphaseList = [];
     var taskPhaseRow;
@@ -36,13 +34,11 @@ function formatApexDatatoJSData(scheduleData, scheduleItemsData, scheduleItemsDa
     for(var i=0;i<taskListForPhase.length;i++){
         if(taskListForPhase[i].buildertek__Phase__c && taskPhaseRow){
             console.log('method 1 in helper');
-            
+
             if(taskPhaseRow['name'] != taskListForPhase[i].buildertek__Phase__c){
                 phIndex = phIndex+1;
                 taskPhaseRow = {}
                 taskPhaseRow["type"] = 'Phase'
-                taskPhaseRow["eventColor"] = 'red'
-                taskPhaseRow["eventStyle"] = 'border'
 
                 taskPhaseRow["id"] = taskListForPhase[i].buildertek__Schedule__c+"_"+taskListForPhase[i].buildertek__Phase__c
                 taskPhaseRow["name"] = taskListForPhase[i].buildertek__Phase__c
@@ -544,17 +540,16 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                 var endDate
                 if (rowData[i]['name'] != 'Milestone Complete') {
                     endDate = new Date(rowData[i].endDate);
-                    endDate.setDate(endDate.getDate() - 1)
+                    endDate.setDate(endDate.getDate())
                 } else {
                     endDate = new Date(rowData[i].endDate);
                     //endDate.setDate(endDate.getDate() + 1)
                 }
 
                 rowData[i].endDate = endDate;
-                if (rowData[i]['id'].indexOf('_generate') == -1) {
-                    console.log('In rowdata id to update data id :- ',rowData[i]['id']);
+                // if (rowData[i]['id'].indexOf('_generate') == -1) {
                     updateData['Id'] = rowData[i]['id']
-                }
+                // }
                 updateData['buildertek__Schedule__c'] = taskData[0].id;
                 updateData['Name'] = rowData[i]['name'];
 
@@ -597,7 +592,6 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                 if (rowData[i]['parentId']) {
                     // console.log(rowData[i]['parentId'])
                     if (rowData[i]['parentId'].split('_')[1]) {
-                        console.log('test log 1:- ',rowData[i]['parentId'].split('_')[1]);
                         updateData['buildertek__Phase__c'] = rowData[i]['parentId'].split('_')[1]
                     }
                 }
@@ -621,16 +615,14 @@ function convertJSONtoApexData(data, taskData, dependenciesData, resourceData) {
                 console.log('hasownproperty updateData -->', updateData.Id );
                 if(phasedatamap.has(updateData.Id)){
                     console.log('updating phase data');
-                    console.log('updateddata id :- ',phasedatamap.get(updateData.Id));
                     updateData['buildertek__Phase__c'] = phasedatamap.get(updateData.Id);
                 }
                 const keys = phasedatamap.keys();
                 for (const key of keys) {
-                    if(updateData.Id == undefined ){
-                        console.log('updateddata id :- ',phasedatamap.get(updateData.Id));
-                        updateData['buildertek__Phase__c'] = phasedatamap.get(key);
-                        updateData['Id'] = 'DemoGenretedId';
-                    }
+                    // if(updateData.Id == undefined){
+                    //     updateData['Id'] = 'DemoGenretedId';
+                    //     updateData['buildertek__Phase__c'] = phasedatamap.get(key);
+                    // }
                 }
 
                 console.log('DemoGenretedId updateData:- ',{updateData});
@@ -678,10 +670,10 @@ function recordsTobeDeleted(oldListOfTaskRecords, newListOfTaskRecords) {
     const listOfRecordIdToBeDeleted = [];
     newListOfTaskRecords.forEach(newTaskRecord => {
         // console.log('newTaskRecord in recordtobedeleted :- ',newTaskRecord);
-        // if(newTaskRecord.Id == "DemoGenretedId"){
-        //     delete newTaskRecord.Id;
-        // }
-        setOfNewRecordId.add(newTaskRecord.Id);
+        var taskId = newTaskRecord.Id
+        if(!(taskId.includes('_generatedt_'))){
+            setOfNewRecordId.add(newTaskRecord.Id);
+        }
     });
 
     oldListOfTaskRecords.forEach(oldTaskRecord => {
