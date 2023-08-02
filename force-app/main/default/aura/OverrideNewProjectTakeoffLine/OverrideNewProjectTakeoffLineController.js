@@ -47,27 +47,43 @@
 
     closeModel: function (component, event, helper) {
         // for Hide/Close Model,set the "isOpen" attribute to "Fasle" 
+        // var workspaceAPI = component.find("workspace");
+        // workspaceAPI.getFocusedTabInfo().then(function (response) {
+        //         var focusedTabId = response.tabId;
+        //         workspaceAPI.closeTab({
+        //             tabId: focusedTabId
+        //         });
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
+        // $A.get("e.force:closeQuickAction").fire();
+        // component.set("v.isOpen", false);
+        // var parentRecordId = component.get("v.parentRecordId");
+        // if (parentRecordId != undefined) {
+
+        // } else {
+        //     var url = location.href;
+        //     var baseURL = url.substring(0, url.indexOf('/', 14));
+        //     //alert('baseURL -------> '+baseURL);
+        //     window.open(baseURL + '/lightning/o/buildertek__Project_Takeoff_Lines__c/list?filterName=Recent', '_self');
+        // }
+
         var workspaceAPI = component.find("workspace");
-        workspaceAPI.getFocusedTabInfo().then(function (response) {
-                var focusedTabId = response.tabId;
-                workspaceAPI.closeTab({
-                    tabId: focusedTabId
-                });
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        workspaceAPI.getFocusedTabInfo().then(function(response) {
+            var focusedTabId = response.tabId;
+            workspaceAPI.closeTab({tabId: focusedTabId});
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
         $A.get("e.force:closeQuickAction").fire();
         component.set("v.isOpen", false);
-        var parentRecordId = component.get("v.parentRecordId");
-        if (parentRecordId != undefined) {
-
-        } else {
-            var url = location.href;
-            var baseURL = url.substring(0, url.indexOf('/', 14));
-            //alert('baseURL -------> '+baseURL);
-            window.open(baseURL + '/lightning/o/buildertek__Project_Takeoff_Lines__c/list?filterName=Recent', '_self');
-        }
+        window.setTimeout(
+            $A.getCallback(function() {
+                $A.get('e.force:refreshView').fire();
+            }), 1000
+        );
 
     },
 
@@ -162,68 +178,69 @@
     },
     saveAndNew: function (component, event, helper) {
         component.set("v.Spinner", true);
+        component.set("v.isSaveNew", true);
 
-        var selectedTradeType = component.get("v.selectedTradeType");
-        var selTradeType;
-        if (selectedTradeType != undefined) {
-            selTradeType = selectedTradeType.Id;
-        } else {
-            selTradeType = null;
-        }
-        var selectedprojecttakeoff = component.get("v.selectedprojecttakeoff");
-        var parentRecordId = component.get("v.parentRecordId");
-        var selectedPToff;
-        if (parentRecordId != undefined) {
-            selectedPToff = component.get("v.parentRecordId");
-        } else {
-            if (selectedprojecttakeoff != undefined) {
-                selectedPToff = selectedprojecttakeoff.Id;
-            } else {
-                selectedPToff = null;
-            }
-        }
-        component.set("v.newprojecttakeoffline.buildertek__Trade_Type__c", selTradeType);
-        //component.set("v.newprojecttakeoffline.buildertek__Project_Takeoff__c", selectedPToff);
-        var ProjtakeoffLineToInsert = JSON.stringify(component.get("v.newprojecttakeoffline"));
-        if (selectedPToff != undefined) {
-            var action = component.get("c.savePToffline");
-            action.setParams({
-                takeoffLines: ProjtakeoffLineToInsert,
-                PtoffId: selectedPToff
-            });
-            action.setCallback(this, function (response) {
-                var state = response.getState();
-                if (state === "SUCCESS") {
-                    var url = location.href;
-                    var baseURL = url.substring(0, url.indexOf('/', 14));
-                    var result = response.getReturnValue();
-                    component.set("v.newprojecttakeoffline", null);
-                    component.set("v.Spinner", false);
-                    var toastEvent = $A.get("e.force:showToast");
-                    toastEvent.setParams({
-                        mode: 'sticky',
-                        message: ' Project Takeoff Line was created',
-                        messageTemplate: " Project Takeoff Line {0} was created",
-                        messageTemplateData: [{
-                            url: baseURL + '/lightning/r/buildertek__Project_Takeoff_Lines__c/' + escape(result.Id) + '/view',
-                            label: result.Name,
-                        }],
-                        type: 'success',
-                        duration: '10000',
-                        mode: 'dismissible'
-                    });
-                    toastEvent.fire();
-                    var navEvt = $A.get("e.force:navigateToSObject");
-                    navEvt.setParams({
-                        "recordId": result.Id,
-                        "slideDevName": "related"
-                    });
-                    navEvt.fire();
-                    window.location.reload(true);
-                }
-            });
-            $A.enqueueAction(action);
-        }
+        // var selectedTradeType = component.get("v.selectedTradeType");
+        // var selTradeType;
+        // if (selectedTradeType != undefined) {
+        //     selTradeType = selectedTradeType.Id;
+        // } else {
+        //     selTradeType = null;
+        // }
+        // var selectedprojecttakeoff = component.get("v.selectedprojecttakeoff");
+        // var parentRecordId = component.get("v.parentRecordId");
+        // var selectedPToff;
+        // if (parentRecordId != undefined) {
+        //     selectedPToff = component.get("v.parentRecordId");
+        // } else {
+        //     if (selectedprojecttakeoff != undefined) {
+        //         selectedPToff = selectedprojecttakeoff.Id;
+        //     } else {
+        //         selectedPToff = null;
+        //     }
+        // }
+        // component.set("v.newprojecttakeoffline.buildertek__Trade_Type__c", selTradeType);
+        // //component.set("v.newprojecttakeoffline.buildertek__Project_Takeoff__c", selectedPToff);
+        // var ProjtakeoffLineToInsert = JSON.stringify(component.get("v.newprojecttakeoffline"));
+        // if (selectedPToff != undefined) {
+        //     var action = component.get("c.savePToffline");
+        //     action.setParams({
+        //         takeoffLines: ProjtakeoffLineToInsert,
+        //         PtoffId: selectedPToff
+        //     });
+        //     action.setCallback(this, function (response) {
+        //         var state = response.getState();
+        //         if (state === "SUCCESS") {
+        //             var url = location.href;
+        //             var baseURL = url.substring(0, url.indexOf('/', 14));
+        //             var result = response.getReturnValue();
+        //             component.set("v.newprojecttakeoffline", null);
+        //             component.set("v.Spinner", false);
+        //             var toastEvent = $A.get("e.force:showToast");
+        //             toastEvent.setParams({
+        //                 mode: 'sticky',
+        //                 message: ' Project Takeoff Line was created',
+        //                 messageTemplate: " Project Takeoff Line {0} was created",
+        //                 messageTemplateData: [{
+        //                     url: baseURL + '/lightning/r/buildertek__Project_Takeoff_Lines__c/' + escape(result.Id) + '/view',
+        //                     label: result.Name,
+        //                 }],
+        //                 type: 'success',
+        //                 duration: '10000',
+        //                 mode: 'dismissible'
+        //             });
+        //             toastEvent.fire();
+        //             var navEvt = $A.get("e.force:navigateToSObject");
+        //             navEvt.setParams({
+        //                 "recordId": result.Id,
+        //                 "slideDevName": "related"
+        //             });
+        //             navEvt.fire();
+        //             window.location.reload(true);
+        //         }
+        //     });
+        //     $A.enqueueAction(action);
+        // }
 
     },
 
@@ -281,4 +298,83 @@
         // enqueue the Action  
         $A.enqueueAction(action);
     },
+
+    handleSubmit : function(component, event, helper) {
+        component.set("v.Spinner", true);
+          console.log('handleSubmit');
+          event.preventDefault();  
+          var fields = event.getParam('fields');
+          console.log('fields: ' + JSON.stringify(fields));
+          var data = JSON.stringify(fields);
+          console.log('data-->>',{data});
+          var action = component.get("c.saveTakeOffLineRecords");
+          action.setParams({
+              "data": data
+          });
+          action.setCallback(this, function (response) {
+              var state = response.getState();
+              var error = response.getError();
+              console.log('Error =>',{error});
+              if (state === "SUCCESS") {
+                  console.log('success');
+                  console.log(response.getReturnValue());
+                //   var recordId = response.getReturnValue();
+                //   console.log('recordId-->>',{recordId});
+                //   var listofPOItems = component.get("v.listofPOItems");
+                //   if(listofPOItems.length > 0){
+                //     helper.savePOLineItems(component, event, helper, recordId);
+                //     }
+                //     component.set("v.Spinner", false);              
+                //   var toastEvent = $A.get("e.force:showToast");
+                //   toastEvent.setParams({
+                //       "type": "Success",
+                //       "title": "Success!",
+                //       "message": "The record has been created successfully."
+                //   });
+                //   toastEvent.fire();
+    
+                //   var saveNnew = component.get("v.isSaveNew");
+                //   console.log('saveNnew: ' + saveNnew);
+    
+                //   if(saveNnew){
+                //       $A.get('e.force:refreshView').fire();
+                //   }
+                //   else{
+                //       console.log('---Else---');
+                //       console.log('saveAndClose');
+                //       var navEvt = $A.get("e.force:navigateToSObject");
+                //       navEvt.setParams({
+                //           "recordId": recordId,
+                //           "slideDevName": "Detail"
+                //       });
+                //       navEvt.fire();
+                //       component.set("v.parentRecordId", null);
+    
+                //       var focusedTabId = '';
+                //       var workspaceAPI = component.find("workspace");
+                //       workspaceAPI.getFocusedTabInfo().then(function(response) {
+                //           focusedTabId = response.tabId;
+                //       })
+    
+                //       window.setTimeout(
+                //           $A.getCallback(function() {
+                //               workspaceAPI.closeTab({tabId: focusedTabId});
+                //           }), 1000
+                //       );
+                //   }
+              }
+              else if (state === "ERROR") {
+                  var toastEvent = $A.get("e.force:showToast");
+                  toastEvent.setParams({
+                      "type": "Error",
+                      "title": "Error!",
+                      "message": "Something Went Wrong"
+                  });
+                  toastEvent.fire();
+                  console.log('error', response.getError());
+              }
+          });
+          $A.enqueueAction(action);
+      },
+
 })

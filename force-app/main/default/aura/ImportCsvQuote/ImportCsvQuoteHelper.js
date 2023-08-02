@@ -16,10 +16,13 @@
             var self = this;
             fr.onload = function() {
                 var fileContents = fr.result;
+                console.log("3" , fileContents);
                 var base64Mark = 'base64,';
                 var dataStart = fileContents.indexOf(base64Mark) + base64Mark.length;
+                console.log("5" , dataStart);
                 
                 fileContents = fileContents.substring(dataStart);
+                console.log("4" , fileContents);
                 
                 helper.upload(component, helper, file, fileContents);
             };

@@ -99,5 +99,16 @@ public class OverrideNewProjectTakeoffLineController {
         
         return TakeofflineToInsert;     
     }
+
+    @AuraEnabled
+    public static string saveTakeOffLineRecords(String data){
+        System.debug('In save method');
+
+        buildertek__Project_Takeoff_Lines__c takeOffLinesToInsert = (buildertek__Project_Takeoff_Lines__c)JSON.deserialize(data, buildertek__Project_Takeoff_Lines__c.class);
+       
+        insert takeOffLinesToInsert;
+        return takeOffLinesToInsert.ID;
+    }
+
     
     }

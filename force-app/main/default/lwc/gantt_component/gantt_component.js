@@ -773,25 +773,25 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         //   },
         // },
         // //Added for Contractor
-        {
-          type: "widget",
-          text: "Contractor",
-          draggable: false,
-          width: 120,
-          readOnly: true,
+        // {
+        //   type: "widget",
+        //   text: "Contractor",
+        //   draggable: false,
+        //   width: 120,
+        //   readOnly: true,
 
-          // editor: "Combo",
-          type: "widget",
-          widgets: [
-            {
-              type: "Combo",
-              items: ["test1", "test2"],
-              editable : false,
-              name: "contractorname",
+        //   // editor: "Combo",
+        //   type: "widget",
+        //   widgets: [
+        //     {
+        //       type: "Combo",
+        //       items: ["test1", "test2"],
+        //       editable : false,
+        //       name: "contractorname",
 
-            },
-          ],
-        },
+        //     },
+        //   ],
+        // },
         // {
         //   text: "Contractor",
         //   draggable: false,
@@ -1291,8 +1291,8 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     //   delete newTaskRecord.active;
     //   newdependencydatalist.push(newTaskRecord);
     // });
-    console.log("Dependency Data map :- ", dependenciesDatamap);
-    console.log("Dependency Data map :- ", newdependencydatalist);
+    // console.log("Dependency Data map :- ", dependenciesDatamap);
+    // console.log("Dependency Data map :- ", newdependencydatalist);
     // console.log('Task id and record Data map :- ', taskidrecordMap)
     // console.log('Task id and record Data map :- ', JSON.stringify(taskidrecordMap))
     upsertDataOnSaveChanges({

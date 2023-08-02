@@ -295,7 +295,7 @@
 }    */
 @media only screen and (max-height: 1080px) {
     .THIS .divcont{
-        max-height: 37vh;
+        max-height: 44vh;
         overflow: auto;
     }
     /* .THIS .av{
