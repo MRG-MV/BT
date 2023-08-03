@@ -36,9 +36,13 @@
             });
         });
 
+
+    },
+
+    SetCss: function(component, event, helper) {
         var mainDiv = component.find("av").getElement();
         var Element = document.getElementById("slds");
-        console.log('bottom => ', Element.style);
+        console.log('bottom => ', Element.clientHeight);
     },
 
     doInit: function(component, event, helper) {

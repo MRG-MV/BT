@@ -71,4 +71,22 @@
         });
         $A.enqueueAction(actions);
     },
+
+    getFieldSetforTakeOffLines: function (component, event, helper) {
+		var action5 = component.get("c.getFieldSet");
+        action5.setParams({
+            objectName: 'buildertek__Project_Takeoff_Lines__c',
+            fieldSetName: 'buildertek__TakeOff_Lines'
+        });
+        action5.setCallback(this, function (response) {     
+            if (response.getState() == 'SUCCESS' && response.getReturnValue()) {
+                component.set("v.Spinner", false);
+                var listOfFields0 = JSON.parse(response.getReturnValue());
+                console.log('listOfFieldsofPOLine-->>',{listOfFields0});
+                // component.set("v.listOfFieldsofPOLine", listOfFields0);
+            }
+        });
+        $A.enqueueAction(action5);
+	},
+
 })

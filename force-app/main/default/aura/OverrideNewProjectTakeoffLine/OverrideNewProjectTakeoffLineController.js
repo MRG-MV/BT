@@ -4,11 +4,11 @@
         var value = helper.getParameterByName(component, event, 'inContextOfRef');
         var context = '';
         var parentRecordId = '';
-        component.set("v.parentRecordId", parentRecordId);
+        // component.set("v.parentRecordId", parentRecordId);
         if (value != null) {
             context = JSON.parse(window.atob(value));
             parentRecordId = context.attributes.recordId;
-            component.set("v.parentRecordId", parentRecordId);
+            // component.set("v.parentRecordId", parentRecordId);
         } else {
             var relatedList = window.location.pathname;
             var stringList = relatedList.split("/");
@@ -21,10 +21,13 @@
             component.set("v.parentRecordId", parentRecordId);
         }
 
-        component.find('quantityId').set("v.value", 1);
+        // component.find('quantityId').set("v.value", 1);
         //alert('parent-------'+ parentRecordId);
-        component.find('projtakeoffid').set("v.value", parentRecordId);
+        // component.find('projtakeoffid').set("v.value", parentRecordId);
         helper.fetchpricebooks(component, event, helper);
+        helper.getFieldSetforTakeOffLines(component, event, helper);
+
+        
 
     },
     handleComponentEvent: function (component, event, helper) {
