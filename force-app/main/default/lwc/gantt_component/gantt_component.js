@@ -125,7 +125,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     if (this.SchedulerId == null || this.SchedulerId == undefined) {
       if (this.recordId == null || this.recordId == undefined) {
         // this.SchedulerId = "a2zDm0000004bPuIAI"; // trail org
-        this.SchedulerId = "a101K00000GobT6QAJ"; // New
+        this.SchedulerId = "a101K000008erhPQAQ"; // New
         // this.SchedulerId = 'a101K00000GobTCQAZ' // Old
       } else {
         this.SchedulerId = this.recordId;

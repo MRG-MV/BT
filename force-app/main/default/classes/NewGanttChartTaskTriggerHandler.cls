@@ -62,6 +62,8 @@ public with sharing class NewGanttChartTaskTriggerHandler{
             upsert mileStoneList;
             NewGanttChartTaskTriggerHandler.blnSkipTaskTrigger = false;
             ProjectTaskTriggerHandler.blnSkipTaskTrigger = false;
+            System.debug('mileStoneList: ' + mileStoneList);
+
         }
     }
 
