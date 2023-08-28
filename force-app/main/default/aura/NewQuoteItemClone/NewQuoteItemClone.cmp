@@ -209,6 +209,7 @@
 
     <aura:attribute name="quoteNameData" type="Object" />
     <aura:handler name="change" value="{!v.quoteNameData}" action="{!c.setTabName}"/>
+    <aura:handler name="change" value="{!v.quoteNameData}" action="{!c.SetCss}"/> 
     <force:recordData aura:id="recordLoader" recordId="{!v.recordId}" fields="Name" targetFields="{!v.quoteNameData}" />
     <!-- Handler -->
 
