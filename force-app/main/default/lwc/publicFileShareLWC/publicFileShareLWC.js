@@ -1,17 +1,57 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import  getContentDocuments from "@salesforce/apex/PublicFileShareController.getContentDocuments";
+import getFolderList from "@salesforce/apex/PublicFileShareController.getFolderList";
+import createPublicFolder from "@salesforce/apex/PublicFileShareController.createPublicFolder";
+import createPublicFileFolderJnc from "@salesforce/apex/PublicFileShareController.createPublicFileFolderJnc";
 import {NavigationMixin} from 'lightning/navigation'
 
 export default class PublicFileShareLWC extends NavigationMixin(LightningElement) {
 
     @api recordId; // Passed record ID
+    @track spinnerDataTable = true;
+
     @track contentDocuments = [] ; // All content documents
     @track selectedDocuments = []; // Selected documents
+    @track folderData = [];
+    @track selectedFolderData = [];
+
+    @track showfiles = false;
+    @track showfolders = true;
+    @track showNewFolderPopup = false;
+
+    @track newFolderName = '';
+    @track newFolderDescription = '';
+
+    columns = [
+        // { label: 'Id', fieldName: 'Id' }
+        { label: 'Select', type: 'radio', typeAttributes: { label: '', name: 'radio', value: 'id', disabled: false } },
+        { label: 'Name', fieldName: 'Name', type: 'text' },
+        { label: 'Description', fieldName: 'buildertek__Description__c', type: 'text' },
+        { label: 'File Count', fieldName: 'buildertek__File_Count__c', type: 'number' },
+        // { label: 'URL', type: 'url', fieldName: 'url', typeAttributes: { label: { fieldName: 'name' }, target: '_blank' } }
+    ];
 
     connectedCallback() {
         // Fetch content documents for the passed record ID
         try {
-            getContentDocuments({recordId:this.recordId})
+            this.getFolderDataFromApex()            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    getFolderDataFromApex(){
+        // this.showNewFolderPopup = false
+        getFolderList()
+            .then((response) =>{
+                console.log("FolderData:- ",response);
+                this.folderData = response;
+                this.spinnerDataTable = false
+            });
+    }
+
+    getFilesforselectedRecord(){
+        getContentDocuments({recordId:this.recordId})
             .then ((response) =>{
                 console.log(response)
                 console.log(typeof(response))
@@ -20,10 +60,8 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
 
                 this.contentDocuments = arrayOfObj;
                 console.log("ContentDocuments :- ",this.contentDocuments)
+                this.spinnerDataTable = false
             });
-        } catch (error) {
-            console.error(error);
-        }
     }
 
     handleCheckboxChange(event) {
@@ -39,10 +77,7 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
                     this.selectedDocuments.push(element)
                 }
             });
-            // const selectedDoc = this.contentDocuments.find(doc => doc.ContentDocument.Id === selectedDocId);
-            // if (selectedDoc) {
-                // this.selectedDocuments = [...this.selectedDocuments, selectedDoc];
-            // }
+
             console.log('selectedDocuments :- ',this.selectedDocuments);
         } else {
             console.log('isChecked in ELSE :- ', isChecked);
@@ -58,10 +93,66 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
             attributes:{ 
                 pageName:'filePreview'
             },
-            state:{ 
+            state:{
                 selectedRecordId: event.target.dataset.id
             }
         })
     }
 
+    handleBack(event){
+        this.showfolders = true;
+        this.showfiles = false;
+    }
+
+    handleAddFiles(event){
+        if (this.selectedFolderData.length == 0){
+            this.template.querySelector('c-toast-component').showToast('error', 'Atleast One Folder is Required to be Selected to add files', 3000);
+        } else{
+            this.spinnerDataTable = true
+            this.showfiles = true;
+            this.showfolders = false;
+            this.getFilesforselectedRecord()
+            console.log('SelectedFolderData :- ', this.selectedFolderData)
+        }
+    }
+
+    handleRowSelection(event) {
+        const selectedRow = event.detail.selectedRows[0];
+        const selectedRow2 = event.detail.selectedRows;
+        console.log('selectedRow 1:- ', selectedRow)
+        console.log('selectedRow 2:- ', selectedRow2)
+        this.selectedFolderData = selectedRow2
+        console.log('selectedfolderdata :- ',this.selectedFolderData[0]);
+    }
+
+    handleNewFolder(event){
+        this.showNewFolderPopup = true;
+    }
+
+    handleConfirm(event){
+        createPublicFileFolderJnc({ Pfolderlst : this.selectedFolderData , cdllist : this.selectedDocuments })
+        .then((response) =>{
+            console.log("Response on confirm click:- ",response);
+        })
+    }
+
+    handleNameChange(event) {
+        this.newFolderName = event.target.value;
+    }
+
+    handleDescriptionChange(event) {
+        this.newFolderDescription = event.target.value;
+    }
+
+    createFolder(){
+        this.spinnerDataTable = true
+        createPublicFolder({ Fname : this.newFolderName, Fdesc : this.newFolderDescription })
+        .then((response) =>{
+            console.log('Response for create folder :- ',response);
+            this.getFolderDataFromApex()
+            this.template.querySelector('c-toast-component').showToast('success', 'New Folder Created Successfully', 3000);
+            this.spinnerDataTable = false
+        })
+        this.showNewFolderPopup = false
+    }
 }

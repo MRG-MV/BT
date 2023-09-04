@@ -1,6 +1,42 @@
 <template>
-    <h1>Hello Test</h1>
+    
+    <!-- ============== toast message =========== -->
+    <c-toast-component></c-toast-component>
+    <!-- ============== toast message =========== -->
+    
+    <!-- ============== Spinner =========== -->
+    <template if:true={spinnerDataTable}>
+        <div data-id="spinnerId" class="slds-spinner_container spinnerclass">
+            <div class="spinner-main-div">
+                <div class="loader--ripple">
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </template> 
+    <!-- ============== Spinner =========== -->
 
+    <div if:true={showfolders}>
+        <div>
+            <!-- <h1>All Folder List with add new folder button</h1> -->
+            <br>
+            <lightning-card title="Folder Table">
+                <lightning-datatable
+                
+                    key-field="Id"
+                    data={folderData}
+                    columns={columns}
+                    onrowselection={handleRowSelection}>
+                </lightning-datatable>
+            </lightning-card>             
+        </div>
+        <center><lightning-button label="Create New Folder" onclick={handleNewFolder}></lightning-button></center>
+        <lightning-button label="Add Files" onclick={handleAddFiles}></lightning-button>
+    </div>
+
+
+    <div if:true={showfiles}>
         <div class="container">
             <div class="section">
                 <h1>All Content Documents</h1>
@@ -29,5 +65,27 @@
                 </template>
             </div>
         </div>
-    
+        <lightning-button label="Back" onclick={handleBack}></lightning-button>
+        <lightning-button label="Confirm" onclick={handleConfirm}></lightning-button>
+    </div>
+
+    <div if:true={showNewFolderPopup}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            
+            <div class="slds-modal__container" >
+
+                <lightning-card title="Create New Public Folder">
+                    <div class="slds-m-around_medium">
+                        <lightning-input label="Name" value={recordName} onchange={handleNameChange}></lightning-input>
+                        <lightning-input label="Description" value={recordDescription} onchange={handleDescriptionChange}></lightning-input>
+                        <lightning-button label="Create Folder" onclick={createFolder}></lightning-button>
+                    </div>
+                </lightning-card>
+
+            </div>
+
+        </section>
+    </div>
+
 </template>
