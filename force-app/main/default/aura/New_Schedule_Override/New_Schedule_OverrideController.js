@@ -87,6 +87,8 @@
         component.set("v.showMessage",true);
         event.preventDefault(); // stop form submission
         var eventFields = event.getParam("fields");
+        console.log('eventFields ',JSON.parse(JSON.stringify(eventFields)));
+        debugger
         // alert(JSON.stringify(eventFields));
         component.find('recordEditForm').submit(eventFields);
 

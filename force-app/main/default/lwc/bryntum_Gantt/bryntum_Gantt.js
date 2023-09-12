@@ -642,29 +642,12 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     });
   }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-	droprow(e) {
-		var taskIdList = this.scheduleItemIdsList;
-		var taskList = this.scheduleItemsDataList;
-		console.log('takslist droprow:-' + taskList);
-		var data = e.dataTransfer.getData("text");
-		// Find the record ID by crawling up the DOM hierarchy
-=======
   droprow(e) {
     var taskIdList = this.scheduleItemIdsList;
     var taskList = this.scheduleItemsDataList;
     console.log('takslist droprow:-'+taskList);
     var data = e.dataTransfer.getData("text");
     // Find the record ID by crawling up the DOM hierarchy
->>>>>>> Stashed changes
-=======
-  droprow(e) {
-    var taskIdList = this.scheduleItemIdsList;
-    var taskList = this.scheduleItemsDataList;
-    var data = e.dataTransfer.getData("text");
-    // Find the record ID by crawling up the DOM hierarchy
->>>>>>> refs/remotes/origin/main
 
     var tar;
     if (e.target.closest('[class*="b-grid-row"]')) {
@@ -1525,87 +1508,37 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     }
   }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-	populateIconsOnExpandCollapse(source) {
-		let id = source.record.id;
-		console.log('populateIconsOnExpandCollapse source ', { source });
-		console.log('id source ', id);
-		var rowPhaseElement = this.template.querySelector(
-			'[data-id="' + source.record.id + '"]'
-		);
-		if (rowPhaseElement && rowPhaseElement.innerHTML) {
-			var iconElement = "";
-			if (source.record.type == "Phase") {
-				console.log('in phase condition');
-				iconElement = `<span class="slds-icon_container slds-icon-standard-task" >
-=======
   populateIconsOnExpandCollapse(source) {
     let id = source.record.id;
     console.log('populateIconsOnExpandCollapse source ',{source});
     console.log('id source ',id);
-=======
-  populateIconsOnExpandCollapse(source) {
->>>>>>> refs/remotes/origin/main
     var rowPhaseElement = this.template.querySelector(
       '[data-id="' + source.record.id + '"]'
     );
     if (rowPhaseElement && rowPhaseElement.innerHTML) {
       var iconElement = "";
       if (source.record.type == "Phase") {
-<<<<<<< HEAD
         console.log('in phase condition');
         iconElement = `<span class="slds-icon_container slds-icon-standard-task" >
->>>>>>> Stashed changes
-=======
-        iconElement = `<span class="slds-icon_container slds-icon-standard-task" >
->>>>>>> refs/remotes/origin/main
                                     <svg aria-hidden="true" class="slds-icon slds-icon-text-default" style="fill: white !important;height:1.2rem;width:1.2rem;">
                                         <use xmlns:xlink=" http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#task">
                                         </use>
                                     </svg>
                                 </span>`;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-				if (
-					rowPhaseElement.innerHTML.indexOf("slds-icon-standard-task") == -1
-				) {
-					if (rowPhaseElement.children.length) {
-						if (rowPhaseElement.children[5].children.length) {
-							console.log('rowPhaseElement ', JSON.parse(JSON.stringify(rowPhaseElement.children[5])));
-							rowPhaseElement.children[5].children[0].innerHTML =
-								iconElement + rowPhaseElement.children[5].children[0].innerHTML;
-						}
-					}
-				}
-			} else if (source.record.type == "Project") {
-				console.log('in project condition');
-				iconElement = `<span class="slds-icon_container slds-icon-custom-custom70" >
-=======
-=======
->>>>>>> refs/remotes/origin/main
         if (
           rowPhaseElement.innerHTML.indexOf("slds-icon-standard-task") == -1
         ) {
           if (rowPhaseElement.children.length) {
             if (rowPhaseElement.children[5].children.length) {
-<<<<<<< HEAD
               console.log('rowPhaseElement ',JSON.parse(JSON.stringify(rowPhaseElement.children[5])));
-=======
->>>>>>> refs/remotes/origin/main
               rowPhaseElement.children[5].children[0].innerHTML =
                 iconElement + rowPhaseElement.children[5].children[0].innerHTML;
             }
           }
         }
       } else if (source.record.type == "Project") {
-<<<<<<< HEAD
         console.log('in project condition');
         iconElement = `<span class="slds-icon_container slds-icon-custom-custom70" >
->>>>>>> Stashed changes
-=======
-        iconElement = `<span class="slds-icon_container slds-icon-custom-custom70" >
->>>>>>> refs/remotes/origin/main
                                     <svg aria-hidden="true" class="slds-icon slds-icon-text-default" style="fill: white !important;height:1.2rem;width:1.2rem;">
                                     <use xmlns:xlink=" http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/custom-sprite/svg/symbols.svg#custom70">
                                         </use>
@@ -1769,40 +1702,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         scheduleDataList,
       });
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-			for (var key in scheduleDataList) {
-				if (scheduleDataList[key].buildertek__Milestone__c == true) {
-					for (var ph of phaseDateList) {
-						if (scheduleDataList[key].buildertek__Phase__c == ph.label) {
-							scheduleDataList[key].buildertek__Start__c = ph.value.expr1;
-							const date1 = new Date(ph.value.expr1);
-							const date2 = new Date(ph.value.expr2);
-							const diffTime = Math.abs(date2 - date1);
-							const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-							// console.log(scheduleDataList[key].buildertek__Duration__c);
-							scheduleDataList[key].buildertek__Duration__c = diffDays;
-							// console.log(scheduleDataList[key].buildertek__Duration__c);
-							// console.log(scheduleDataList[key].buildertek__Phase__c);
-							// console.log('---------');
-						}
-					}
-				}
-			}
-			console.log('scheduleDataList after logic changed ', { scheduleDataList });
-			this.scheduleItemsDataList = scheduleDataList;
-			var formatedSchData = formatData(
-				this.scheduleData,
-				this.scheduleItemsData,
-				this.scheduleItemsDataList
-			);
-			console.log("=== formatedSchData ===");
-			console.log({
-				formatedSchData,
-			});
-=======
-=======
->>>>>>> refs/remotes/origin/main
       for (var key in scheduleDataList) {
         if (scheduleDataList[key].buildertek__Milestone__c == true) {
           for (var ph of phaseDateList) {
@@ -1821,10 +1720,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
           }
         }
       }
-<<<<<<< HEAD
       console.log('scheduleDataList after logic changed ',{scheduleDataList});
-=======
->>>>>>> refs/remotes/origin/main
       this.scheduleItemsDataList = scheduleDataList;
       var formatedSchData = formatData(
         this.scheduleData,
@@ -1835,10 +1731,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       console.log({
         formatedSchData,
       });
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> refs/remotes/origin/main
 
       // var refVar = formatedSchData;
       // for(var key in refVar.rows[0].children){
@@ -1870,250 +1762,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       resourceRowData = formatedSchData["resourceRowData"];
       assignmentRowData = formatedSchData["assignmentRowData"];
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-			const holiday = [
-				{
-					id: "general",
-					name: "General",
-					intervals: [
-						{
-							recurrentStartDate: "on Sat at 0:00",
-							recurrentEndDate: "on Mon at 0:00",
-							isWorking: false,
-						},
-						{
-							startDate: "2023-03-06",
-							endDate: "2023-03-07",
-							isWorking: false,
-							name: "Vacation",
-						},
-					],
-					expanded: true,
-					children: [
-						{
-							id: "business",
-							name: "Business",
-							hoursPerDay: 8,
-							daysPerWeek: 5,
-							daysPerMonth: 20,
-							intervals: [
-								{
-									recurrentStartDate: "every weekday at 12:00",
-									recurrentEndDate: "every weekday at 13:00",
-									isWorking: false,
-								},
-								{
-									recurrentStartDate: "every weekday at 17:00",
-									recurrentEndDate: "every weekday at 08:00",
-									isWorking: false,
-								},
-							],
-						},
-						{
-							id: "night",
-							name: "Night shift",
-							hoursPerDay: 8,
-							daysPerWeek: 5,
-							daysPerMonth: 20,
-							intervals: [
-								{
-									recurrentStartDate: "every weekday at 6:00",
-									recurrentEndDate: "every weekday at 22:00",
-									isWorking: false,
-								},
-							],
-						},
-					],
-				},
-			];
-			const project = new bryntum.gantt.ProjectModel({
-				//enableProgressNotifications : true,
-				calendar: data.project.calendar,
-				// startDate: data.project.startDate,
-				tasksData: tasks.rows, //tasks.rows
-				dependenciesData: taskDependencyData,
-				skipNonWorkingTimeWhenSchedulingManually: true, //taskDependencyData
-				// resourcesData: data.resources.rows,
-				// /assignmentsData: data.assignments.rows,
-				resourcesData: resourceRowData, //this.showAllContacts,//, //resourceRowData
-				assignmentsData: assignmentRowData,
-				// calendarsData: data.calendars.rows,
-				calendarsData: holiday,
-			});
-			console.log("calendar rows to  ==>", Array.isArray(data.calendars.rows));
-			const gantt = new bryntum.gantt.Gantt({
-				project,
-				appendTo: this.template.querySelector(".container"),
-				//startDate: "2019-01-12",
-				//endDate: "2019-03-24",
-				infiniteScroll: true,
-				bufferCoef: 2,
-				tbar: new GanttToolbar(),
-				rowHeight: 30,
-				barMargin: 5,
-				minHeight: "80em",
-				viewPreset: "weekAndDayLetter",
-				dependencyIdField: "sequenceNumber",
-				// dependencyIdField: "wbsCode",
-				columns: [
-					{
-						type: "wbs",
-						editor: false,
-					},
-					{
-						type: "action",
-						text: "Add",
-						width: 40,
-						title: "Add",
-						actions: [
-							{
-								cls: "b-fa b-fa-plus",
-								onClick: ({ record }) => {
-									console.log("record ===>" + record);
-									if (record._data.id.indexOf("_generate") == -1) {
-										this.recordTaskParent = record;
-										this.addNewTask(record);
-									}
-								},
-							},
-						],
-					},
-					{
-						type: "action",
-						text: "Edit",
-						width: 50,
-						actions: [
-							{
-								cls: "b-fa b-fa-pen",
-								onClick: ({ record }) => {
-									if (
-										record._data.type == "Task" &&
-										record._data.id.indexOf("_generate") == -1
-									) {
-										this.taskRecordId = record._data.id;
-										this.getRecordData(record._data.id, record._data);
-									}
-								},
-								renderer: ({ action, record }) => {
-									if (
-										record._data.type == "Task" &&
-										record._data.id.indexOf("_generate") == -1
-									) {
-										//&& record._data.id.indexOf('_generate') == -1
-										return `<i class="b-action-item ${action.cls}" ></i>`;
-									} else {
-										return `<i class="b-action-item ${action.cls}" style="display:none;"></i>`;
-									}
-								},
-							},
-						],
-					},
-					{
-						type: "percentdone",
-						showCircle: true,
-						width: 50,
-						text: "% Done",
-						editor: true,
-					},
-					{
-						type: "action",
-						text: "Complete",
-						width: 50,
-						actions: [
-							{
-								cls: "b-fa b-fa-check",
-								onClick: ({ record }) => {
-									if (record._data.type == "Task") {
-										if (record._data.percentDone == 100) {
-											record.set("percentDone", 0);
-										} else {
-											record.set("percentDone", 100);
-										}
-									}
-								},
-								renderer: ({ action, record }) => {
-									if (record._data.type == "Task") {
-										return `<i class="b-action-item ${action.cls}" ></i>`;
-									} else {
-										return `<i class="b-action-item ${action.cls}" style="display:none;"></i>`;
-									}
-								},
-							},
-						],
-					},
-					{
-						type: "name",
-						width: 250,
-						editor: true,
-						renderer: (record) => {
-							this.populateIcons(record);
-							if (record.record._data.type == "Phase") {
-								record.cellElement.style.margin = "";
-							}
-							if (
-								record.record._data.iconCls == "b-fa b-fa-arrow-left indentTrue"
-							) {
-								//record.cellElement.style.margin = '0 0 0 1.5rem';
-							}
-							if (record.record._data.name == "Milestone Complete") {
-								return "Milestone";
-							} else {
-								return record.value;
-							}
-						},
-					},
-					{
-						text: "Predecessor",
-						width: 200,
-						editor: false,
-						renderer: (record) => {
-							if (record.record._data.type == "Project") {
-								return "";
-							}
-							if (record.record._data.type == "Phase") {
-								return "";
-							}
-							if (record.record._data.name == "Milestone Complete") {
-								return "";
-							} else {
-								return record.record._data.predecessorName;
-							}
-						},
-					},
-					{
-						type: "startdate",
-						editor: true,
-						renderer: function (record) {
-							var months = [
-								"Jan",
-								"Feb",
-								"Mar",
-								"Apr",
-								"May",
-								"Jun",
-								"Jul",
-								"Aug",
-								"Sep",
-								"Oct",
-								"Nov",
-								"Dec",
-							];
-							if (
-								record.value &&
-								record.record._data.name == "Milestone Complete"
-							) {
-								var endDate;
-								var endDate1 = new Date(record.record.startDate);
-								endDate1.setDate(
-									endDate1.getDate() + record.record._data.durationMile
-								);
-								if (record.record._parent._data.endDate != undefined) {
-									endDate = new Date(record.record._parent._data.endDate);
-									endDate.setDate(endDate.getDate() - 1);
-									endDate = new Date(endDate);
-									//return record.value;
-=======
       const holiday = [
         {
           id: "general",
@@ -2169,8 +1817,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
           ],
         },
       ];
->>>>>>> refs/remotes/origin/main
-
       const project = new bryntum.gantt.ProjectModel({
         //enableProgressNotifications : true,
         calendar: data.project.calendar,
@@ -2196,7 +1842,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         tbar: new GanttToolbar(),
         rowHeight: 30,
         barMargin: 5,
-        minHeight: "80em",
+        // minHeight: "80em",
         viewPreset: "weekAndDayLetter",
         dependencyIdField: "sequenceNumber",
         // dependencyIdField: "wbsCode",
@@ -2358,254 +2004,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                   endDate = new Date(endDate);
                   //return record.value;
 
-<<<<<<< HEAD
-							const map1 = new Map();
-							var count = 0;
-=======
-      const holiday = [
-        {
-          id: "general",
-          name: "General",
-          intervals: [
-            {
-              recurrentStartDate: "on Sat at 0:00",
-              recurrentEndDate: "on Mon at 0:00",
-              isWorking: false,
-            },
-            {
-              startDate: "2023-03-06",
-              endDate: "2023-03-07",
-              isWorking: false,
-              name: "Vacation",
-            },
-          ],
-          expanded: true,
-          children: [
-            {
-              id: "business",
-              name: "Business",
-              hoursPerDay: 8,
-              daysPerWeek: 5,
-              daysPerMonth: 20,
-              intervals: [
-                {
-                  recurrentStartDate: "every weekday at 12:00",
-                  recurrentEndDate: "every weekday at 13:00",
-                  isWorking: false,
-                },
-                {
-                  recurrentStartDate: "every weekday at 17:00",
-                  recurrentEndDate: "every weekday at 08:00",
-                  isWorking: false,
-                },
-              ],
-            },
-            {
-              id: "night",
-              name: "Night shift",
-              hoursPerDay: 8,
-              daysPerWeek: 5,
-              daysPerMonth: 20,
-              intervals: [
-                {
-                  recurrentStartDate: "every weekday at 6:00",
-                  recurrentEndDate: "every weekday at 22:00",
-                  isWorking: false,
-                },
-              ],
-            },
-          ],
-        },
-      ];
-      const project = new bryntum.gantt.ProjectModel({
-        //enableProgressNotifications : true,
-        calendar: data.project.calendar,
-        // startDate: data.project.startDate,
-        tasksData: tasks.rows, //tasks.rows
-        dependenciesData: taskDependencyData,
-        skipNonWorkingTimeWhenSchedulingManually: true, //taskDependencyData
-        // resourcesData: data.resources.rows,
-        // /assignmentsData: data.assignments.rows,
-        resourcesData: resourceRowData, //this.showAllContacts,//, //resourceRowData
-        assignmentsData: assignmentRowData,
-        // calendarsData: data.calendars.rows,
-        calendarsData: holiday,
-      });
-      console.log("calendar rows to  ==>", Array.isArray(data.calendars.rows));
-      const gantt = new bryntum.gantt.Gantt({
-        project,
-        appendTo: this.template.querySelector(".container"),
-        //startDate: "2019-01-12",
-        //endDate: "2019-03-24",
-        infiniteScroll: true,
-        bufferCoef: 2,
-        tbar: new GanttToolbar(),
-        rowHeight: 30,
-        barMargin: 5,
-        minHeight: "80em",
-        viewPreset: "weekAndDayLetter",
-        dependencyIdField: "sequenceNumber",
-        // dependencyIdField: "wbsCode",
-        columns: [
-          {
-            type: "wbs",
-            editor: false,
-          },
-          {
-            type: "action",
-            text: "Add",
-            width: 40,
-            title: "Add",
-            actions: [
-              {
-                cls: "b-fa b-fa-plus",
-                onClick: ({ record }) => {
-                  console.log("record ===>" + record);
-                  if (record._data.id.indexOf("_generate") == -1) {
-                    this.recordTaskParent = record;
-                    this.addNewTask(record);
-                  }
-                },
-              },
-            ],
-          },
-          {
-            type: "action",
-            text: "Edit",
-            width: 50,
-            actions: [
-              {
-                cls: "b-fa b-fa-pen",
-                onClick: ({ record }) => {
-                  if (
-                    record._data.type == "Task" &&
-                    record._data.id.indexOf("_generate") == -1
-                  ) {
-                    this.taskRecordId = record._data.id;
-                    this.getRecordData(record._data.id, record._data);
-                  }
-                },
-                renderer: ({ action, record }) => {
-                  if (
-                    record._data.type == "Task" &&
-                    record._data.id.indexOf("_generate") == -1
-                  ) {
-                    //&& record._data.id.indexOf('_generate') == -1
-                    return `<i class="b-action-item ${action.cls}" ></i>`;
-                  } else {
-                    return `<i class="b-action-item ${action.cls}" style="display:none;"></i>`;
-                  }
-                },
-              },
-            ],
-          },
-          {
-            type: "percentdone",
-            showCircle: true,
-            width: 50,
-            text: "% Done",
-            editor: true,
-          },
-          {
-            type: "action",
-            text: "Complete",
-            width: 50,
-            actions: [
-              {
-                cls: "b-fa b-fa-check",
-                onClick: ({ record }) => {
-                  if (record._data.type == "Task") {
-                    if (record._data.percentDone == 100) {
-                      record.set("percentDone", 0);
-                    } else {
-                      record.set("percentDone", 100);
-                    }
-                  }
-                },
-                renderer: ({ action, record }) => {
-                  if (record._data.type == "Task") {
-                    return `<i class="b-action-item ${action.cls}" ></i>`;
-                  } else {
-                    return `<i class="b-action-item ${action.cls}" style="display:none;"></i>`;
-                  }
-                },
-              },
-            ],
-          },
-          {
-            type: "name",
-            width: 250,
-            editor: true,
-            renderer: (record) => {
-              this.populateIcons(record);
-              if (record.record._data.type == "Phase") {
-                record.cellElement.style.margin = "";
-              }
-              if (
-                record.record._data.iconCls == "b-fa b-fa-arrow-left indentTrue"
-              ) {
-                //record.cellElement.style.margin = '0 0 0 1.5rem';
-              }
-              if (record.record._data.name == "Milestone Complete") {
-                return "Milestone";
-              } else {
-                return record.value;
-              }
-            },
-          },
-          {
-            text: "Predecessor",
-            width: 200,
-            editor: false,
-            renderer: (record) => {
-              if (record.record._data.type == "Project") {
-                return "";
-              }
-              if (record.record._data.type == "Phase") {
-                return "";
-              }
-              if (record.record._data.name == "Milestone Complete") {
-                return "";
-              } else {
-                return record.record._data.predecessorName;
-              }
-            },
-          },
-          {
-            type: "startdate",
-            editor: true,
-            renderer: function (record) {
-              var months = [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-              ];
-              if (
-                record.value &&
-                record.record._data.name == "Milestone Complete"
-              ) {
-                var endDate;
-                var endDate1 = new Date(record.record.startDate);
-                endDate1.setDate(
-                  endDate1.getDate() + record.record._data.durationMile
-                );
-                if (record.record._parent._data.endDate != undefined) {
-                  endDate = new Date(record.record._parent._data.endDate);
-                  endDate.setDate(endDate.getDate() - 1);
-                  endDate = new Date(endDate);
-                  //return record.value;
-
-=======
->>>>>>> refs/remotes/origin/main
                   return (
                     months[endDate.getMonth()] +
                     " " +
@@ -2615,10 +2013,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                   );
                 }
               } else {
-<<<<<<< HEAD
                 console.log('record.record.startDate ',record.record.startDate);
-=======
->>>>>>> refs/remotes/origin/main
                 var sdate = new Date(record.record.startDate);
                 return (
                   months[sdate.getMonth()] +
@@ -2638,49 +2033,10 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                 record.rowElement.draggable = true;
               }
               var endDate;
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> refs/remotes/origin/main
 
               const map1 = new Map();
               var count = 0;
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-									map1.set(count, endDate);
-									//   console.log({map1});
-									return (
-										months[endDate.getMonth()] +
-										" " +
-										Number(endDate.getDate()) +
-										", " +
-										endDate.getFullYear()
-									);
-								} else if (
-									record.record._data.duration > -2 &&
-									record.record._data.type == "Task" &&
-									record.record._data.name != "Milestone Complete"
-								) {
-									// console.log('In elseif(-2) conditon for enddate');
-									endDate = new Date(record.value);
-									endDate.setDate(endDate.getDate() - 1);
-									endDate = new Date(endDate);
-									return (
-										months[endDate.getMonth()] +
-										" " +
-										Number(endDate.getDate()) +
-										", " +
-										endDate.getFullYear()
-									);
-								} else {
-									// console.log('start Date',record.record.startDate);
-									//   console.log('MileStone EndDate');
-									//   console.log({record});
-									// console.log('-->'+record.record._data.name);
-=======
-=======
->>>>>>> refs/remotes/origin/main
               var months = [
                 "Jan",
                 "Feb",
@@ -2704,17 +2060,10 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                   record.record._data.duration >= 1 &&
                   record.record._data.type == "Task" &&
                   record.record._data.name != "Milestone Complete"
-<<<<<<< HEAD
                   ) {
                     // console.log('In if conditon for enddate');
                     var start;
                     var endDate = new Date(record.value);
-=======
-                ) {
-                  // console.log('In if conditon for enddate');
-                  var start;
-                  var endDate = new Date(record.value);
->>>>>>> refs/remotes/origin/main
                   var start = new Date(record.record.startDate.getTime());
                   var duration = record.record.duration;
                   var eDate = new Date(start);
@@ -2771,10 +2120,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
                   endDate = new Date(record.value);
                   endDate.setDate(endDate.getDate() - 1);
                   endDate = new Date(endDate);
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> refs/remotes/origin/main
 
                   map1.set(count, endDate);
                   //   console.log({map1});
@@ -3737,91 +3082,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         } else if (event.target.classList.contains("b-fa-arrow-left")) {
           event.record._data["indentVal"] = false;
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-					event.target.classList.remove("b-fa-arrow-left");
-					event.target.parentElement.parentElement.classList.remove(
-						"indentCellTrue"
-					);
-					event.target.classList.remove("indentTrue");
-					event.record._data["iconCls"] = "b-fa b-fa-arrow-right";
-					if (!event.target.classList.contains("b-fa-arrow-right")) {
-						event.target.classList.add("b-fa-arrow-right");
-					}
-				} else if (
-					event.record._data.startDate &&
-					!event.target.classList.contains("b-sch-timeaxis-cell")
-				) {
-					this.GanttVar.scrollToDate(event.record._data.startDate, {
-						block: "center",
-						animate: 500,
-					});
-					window.sessionStorage.setItem(
-						"lastInteractedTaskId",
-						event.record._data.id
-					);
-				}
-				if (event.column.data.text == "Internal Resource") {
-					if (event.target.id == "editInternalResource") {
-						if (event.target.dataset.resource) {
-							this.taskRecordId = event.record._data.id;
-							this.showEditResourcePopup = true;
-							console.log('taskReocrdId:=- ' + this.taskRecordId);
-							this.selectedContactApiName = "buildertek__Resource__c";
-							this.selectedResourceContact =
-								event.record._data.internalresource;
-						}
-					} else if (event.target.classList.contains("addinternalresource")) {
-						this.taskRecordId = event.record._data.id;
-						console.log('taskReocrdId:=- ' + this.taskRecordId);
-						this.showEditResourcePopup = true;
-						this.selectedContactApiName = "buildertek__Resource__c";
-						this.selectedResourceContact = "";
-					}
-				}
-				//Added for Contractor
-				if (event.column.data.text == "Contractor") {
-					if (event.target.id == "editcontractor") {
-						if (event.target.dataset.resource) {
-							this.taskRecordId = event.record._data.id;
-							this.showContractor = true;
-							this.selectedContactApiName = "buildertek__Contractor__c";
-							this.selectedResourceAccount = event.record._data.contractoracc;
-						}
-					} else if (event.target.classList.contains("addcontractor")) {
-						this.taskRecordId = event.record._data.id;
-						this.showContractor = true;
-						this.selectedContactApiName = "buildertek__Contractor__c";
-						this.selectedResourceAccount = "";
-					}
-				}
-				if (event.column.data.text == "Contractor Resource") {
-					if (event.target.id == "editcontractorResource") {
-						if (event.target.dataset.resource) {
-							this.taskRecordId = event.record._data.id;
-							this.showEditResourcePopup = true;
-							console.log('taskReocrdId:=- ' + this.taskRecordId);
-							this.selectedContactApiName =
-								"buildertek__Contractor_Resource__c";
-							this.selectedResourceContact =
-								event.record._data.contractorresource;
-							//   console.log(
-							//     "this.selectedResourceContact>>>",
-							//     this.selectedResourceContact
-							//   );
-						}
-					} else if (event.target.classList.contains("addcontractorresource")) {
-						this.taskRecordId = event.record._data.id;
-						this.showEditResourcePopup = true;
-						console.log('taskReocrdId:=- ' + this.taskRecordId);
-						this.selectedContactApiName = "buildertek__Contractor_Resource__c";
-						this.selectedResourceContact = "";
-					}
-				}
-			});
-=======
-=======
->>>>>>> refs/remotes/origin/main
           event.target.classList.remove("b-fa-arrow-left");
           event.target.parentElement.parentElement.classList.remove(
             "indentCellTrue"
@@ -3849,7 +3109,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
             if (event.target.dataset.resource) {
               this.taskRecordId = event.record._data.id;
               this.showEditResourcePopup = true;
-<<<<<<< HEAD
               console.log('taskReocrdId:=- '+this.taskRecordId);
               this.selectedContactApiName = "buildertek__Resource__c";
               this.selectedResourceContact =
@@ -3858,14 +3117,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
           } else if (event.target.classList.contains("addinternalresource")) {
             this.taskRecordId = event.record._data.id;
             console.log('taskReocrdId:=- '+this.taskRecordId);
-=======
-              this.selectedContactApiName = "buildertek__Resource__c";
-              this.selectedResourceContact =
-                event.record._data.internalresource;
-            }
-          } else if (event.target.classList.contains("addinternalresource")) {
-            this.taskRecordId = event.record._data.id;
->>>>>>> refs/remotes/origin/main
             this.showEditResourcePopup = true;
             this.selectedContactApiName = "buildertek__Resource__c";
             this.selectedResourceContact = "";
@@ -3892,10 +3143,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
             if (event.target.dataset.resource) {
               this.taskRecordId = event.record._data.id;
               this.showEditResourcePopup = true;
-<<<<<<< HEAD
               console.log('taskReocrdId:=- '+this.taskRecordId);
-=======
->>>>>>> refs/remotes/origin/main
               this.selectedContactApiName =
                 "buildertek__Contractor_Resource__c";
               this.selectedResourceContact =
@@ -3908,19 +3156,12 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
           } else if (event.target.classList.contains("addcontractorresource")) {
             this.taskRecordId = event.record._data.id;
             this.showEditResourcePopup = true;
-<<<<<<< HEAD
             console.log('taskReocrdId:=- '+this.taskRecordId);
-=======
->>>>>>> refs/remotes/origin/main
             this.selectedContactApiName = "buildertek__Contractor_Resource__c";
             this.selectedResourceContact = "";
           }
         }
       });
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> refs/remotes/origin/main
 
       gantt.on("save", (source) => {
         ////console.log(source)
@@ -4034,21 +3275,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       });
       this.dispatchEvent(toastEvent);
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-	handleBeforeUnload() {
-		console.log("handleBeforeUnload");
-		if (this.showToast && this.isrowchange) {
-			console.log("handleBeforeUnload in if condition");
-			const toastEvent = new ShowToastEvent({
-				title: "Warning",
-				message: "Your have made changes please save before closing.",
-				variant: "warning",
-			});
-			this.dispatchEvent(toastEvent);
-=======
-=======
->>>>>>> refs/remotes/origin/main
       setTimeout(() => {
         const toastCloseEvent = new ShowToastEvent({
           title: "",
@@ -4059,15 +3285,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       }, 5000);
     }
   }
-<<<<<<< HEAD
 
 
->>>>>>> Stashed changes
-=======
-  // saveWbsData(wbsValue){
-  //   console.log({wbsValue});
-
-  // }
->>>>>>> refs/remotes/origin/main
 
 }

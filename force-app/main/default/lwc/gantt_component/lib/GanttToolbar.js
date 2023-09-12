@@ -523,6 +523,7 @@ export default base => class GanttToolbar extends base {
             var taskData = JSON.parse(this.gantt.taskStore.json);
             var taskEdit = this.gantt.taskStore;
             console.log('taskEdit ',{taskEdit});
+            console.log('taskEdit assignmentStore ',taskEdit.assignmentStore.json);
             debugger;
             var dependenciesData = JSON.parse(this.gantt.dependencyStore.json);
             var resourceData = JSON.parse(this.gantt.assignmentStore.json)

@@ -1,38 +1,69 @@
 ({
     doInit: function (component, event, helper) {
         component.set("v.isOpen", true);
+        component.set("v.Spinner", true);
+        // var value = helper.getParameterByName(component, event, 'inContextOfRef');
+        // var context = '';
+        // var parentId = '';
+        // component.set("v.parentRecordId", parentId);
+        // if (value != null) {
+        //     context = JSON.parse(window.atob(value));
+        //     parentId = context.attributes.recordId;
+        //     component.set("v.parentRecordId", parentId);
+        // } else {
+        //     var relatedList = window.location.pathname;
+        //     var stringList = relatedList.split("/");
+        //     parentId = stringList[4];
+        //     if (parentId == 'related') {
+        //         var stringList = relatedList.split("/");
+        //         parentId = stringList[3];
+        //         component.set("v.parentRecordId", parentId);
+        //     }
+        // }
+        // console.log('parentUpdated-------'+ component.get("v.parentRecordId"));
+        // console.log({parentId});
+
         var value = helper.getParameterByName(component, event, 'inContextOfRef');
         var context = '';
         var parentRecordId = '';
-        // component.set("v.parentRecordId", parentRecordId);
+        component.set("v.parentRecordId", parentRecordId);
         if (value != null) {
             context = JSON.parse(window.atob(value));
             parentRecordId = context.attributes.recordId;
-            // component.set("v.parentRecordId", parentRecordId);
+            component.set("v.parentRecordId", parentRecordId);
         } else {
             var relatedList = window.location.pathname;
             var stringList = relatedList.split("/");
-            // alert('stringList---'+stringList);
             parentRecordId = stringList[4];
             if (parentRecordId == 'related') {
                 var stringList = relatedList.split("/");
                 parentRecordId = stringList[3];
             }
+
             component.set("v.parentRecordId", parentRecordId);
         }
+        if(parentRecordId != null && parentRecordId != ''){
+            var action = component.get("c.getobjectName");
+            action.setParams({
+                recordId: parentRecordId,
+            });
+            action.setCallback(this, function (response) {
+                if (response.getState() == 'SUCCESS' && response.getReturnValue()) {
+                    var objName = response.getReturnValue();
+                    if(objName == 'buildertek__Project_Takeoff__c'){
+                        component.set("v.parentTakeOffId", parentRecordId);
+                    }
+                } 
+            });
+            $A.enqueueAction(action);
+        }
 
-        // component.find('quantityId').set("v.value", 1);
-        //alert('parent-------'+ parentRecordId);
-        // component.find('projtakeoffid').set("v.value", parentRecordId);
         helper.fetchpricebooks(component, event, helper);
         helper.getFieldSetforTakeOffLines(component, event, helper);
-
-        
-
     },
+
     handleComponentEvent: function (component, event, helper) {
         var selectedAccountGetFromEvent = event.getParam("recordByEvent");
-        // component.set("v.newprojecttakeoffline.buildertek__Item_Name__c",selectedAccountGetFromEvent.Name);
         component.set("v.newprojecttakeoffline.buildertek__Product__c", selectedAccountGetFromEvent.Id);
         component.set("v.productId", selectedAccountGetFromEvent.Id);
         component.set("v.productName", selectedAccountGetFromEvent.Name);
@@ -41,7 +72,6 @@
 
     handleComponentEvents: function (component, event, helper) {
         var selectedAccountGetFromEvent = event.getParam("recordByEvent");
-        // component.set("v.newprojecttakeoffline.buildertek__Item_Name__c",selectedAccountGetFromEvent.Name);
         component.set("v.newprojecttakeoffline.buildertek__Product__c", selectedAccountGetFromEvent.Id);
         component.set("v.productId", selectedAccountGetFromEvent.Id);
         component.set("v.productName", selectedAccountGetFromEvent.Name);
@@ -80,14 +110,7 @@
         .catch(function(error) {
             console.log(error);
         });
-        $A.get("e.force:closeQuickAction").fire();
         component.set("v.isOpen", false);
-        window.setTimeout(
-            $A.getCallback(function() {
-                $A.get('e.force:refreshView').fire();
-            }), 1000
-        );
-
     },
 
     save: function (component, event, helper) {
@@ -180,8 +203,10 @@
 
     },
     saveAndNew: function (component, event, helper) {
-        component.set("v.Spinner", true);
+        console.log('saveAndNew Button Click');
+        // component.set("v.Spinner", true);
         component.set("v.isSaveNew", true);
+        // debugger;
 
         // var selectedTradeType = component.get("v.selectedTradeType");
         // var selTradeType;
@@ -321,50 +346,45 @@
               if (state === "SUCCESS") {
                   console.log('success');
                   console.log(response.getReturnValue());
-                //   var recordId = response.getReturnValue();
+                  var recordId = response.getReturnValue();
                 //   console.log('recordId-->>',{recordId});
                 //   var listofPOItems = component.get("v.listofPOItems");
-                //   if(listofPOItems.length > 0){
-                //     helper.savePOLineItems(component, event, helper, recordId);
-                //     }
-                //     component.set("v.Spinner", false);              
-                //   var toastEvent = $A.get("e.force:showToast");
-                //   toastEvent.setParams({
-                //       "type": "Success",
-                //       "title": "Success!",
-                //       "message": "The record has been created successfully."
-                //   });
-                //   toastEvent.fire();
+                  component.set("v.Spinner", false);              
+                  var toastEvent = $A.get("e.force:showToast");
+                  toastEvent.setParams({
+                      "type": "Success",
+                      "title": "Success!",
+                      "message": "The record has been created successfully."
+                  });
+                  toastEvent.fire();
     
-                //   var saveNnew = component.get("v.isSaveNew");
-                //   console.log('saveNnew: ' + saveNnew);
+                  var saveNnew = component.get("v.isSaveNew");
+                  console.log('saveNnew: ' + saveNnew);
     
-                //   if(saveNnew){
-                //       $A.get('e.force:refreshView').fire();
-                //   }
-                //   else{
-                //       console.log('---Else---');
-                //       console.log('saveAndClose');
-                //       var navEvt = $A.get("e.force:navigateToSObject");
-                //       navEvt.setParams({
-                //           "recordId": recordId,
-                //           "slideDevName": "Detail"
-                //       });
-                //       navEvt.fire();
-                //       component.set("v.parentRecordId", null);
+                  if(saveNnew){
+                      $A.get('e.force:refreshView').fire();
+                  }
+                  else{
+                      console.log('---Else---');
+                      console.log('saveAndClose');
+                      var navEvt = $A.get("e.force:navigateToSObject");
+                      navEvt.setParams({
+                          "recordId": recordId,
+                          "slideDevName": "Detail"
+                      });
+                      navEvt.fire();    
+                      var focusedTabId = '';
+                      var workspaceAPI = component.find("workspace");
+                      workspaceAPI.getFocusedTabInfo().then(function(response) {
+                          focusedTabId = response.tabId;
+                      })
     
-                //       var focusedTabId = '';
-                //       var workspaceAPI = component.find("workspace");
-                //       workspaceAPI.getFocusedTabInfo().then(function(response) {
-                //           focusedTabId = response.tabId;
-                //       })
-    
-                //       window.setTimeout(
-                //           $A.getCallback(function() {
-                //               workspaceAPI.closeTab({tabId: focusedTabId});
-                //           }), 1000
-                //       );
-                //   }
+                      window.setTimeout(
+                          $A.getCallback(function() {
+                              workspaceAPI.closeTab({tabId: focusedTabId});
+                          }), 1000
+                      );
+                  }
               }
               else if (state === "ERROR") {
                   var toastEvent = $A.get("e.force:showToast");
@@ -379,5 +399,4 @@
           });
           $A.enqueueAction(action);
       },
-
 })

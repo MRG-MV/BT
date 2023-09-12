@@ -5,12 +5,12 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
+        <members>*</members>̃
         <name>ApexComponent</name>
-    </types>
+    </types>̃
     <types>
         <members>*</members>
-        <name>ApexPage</name>
+        <name>ApexPage</name>̃
     </types>
     <types>
         <members>*</members>
@@ -32,6 +32,10 @@
     <types>
         <members>*</members>
         <name>CustomTab</name>
+    </types>
+     <types>
+        <members>*</members> 
+        <name>LightningComponentBundle</name>
     </types>
     <version>56.0</version>
 </Package>

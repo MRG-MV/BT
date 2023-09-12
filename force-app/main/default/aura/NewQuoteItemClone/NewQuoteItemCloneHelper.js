@@ -1529,16 +1529,75 @@
         console.log('isproject',isproject);
         var headerDiv = component.find("headerDiv");
         console.log('headerDiv',headerDiv);
-        
+        var totalPage = component.get("v.total");
+        console.log('totalPage',totalPage);
+
         // Check if the current URL contains a specific keyword or phrase
         if (isproject) {
             console.log('in if');
-            $A.util.addClass(headerDiv, "divconts");
-        } else {
+            $A.util.addClass(headerDiv, "divcont1");
+        } else if(!isproject){
             console.log('in else');
-            $A.util.removeClass(headerDiv, "divconts");
+            $A.util.removeClass(headerDiv, "divcont1");
+
+            // if(totalPage < 50){
+            //     $A.util.addClass(headerDiv, "divcont2");
+            // } else {
+            //     $A.util.removeClass(headerDiv, "divcont2");
+            // }
         }
-    }
+    },
+// >>>>>>>>>>>>>> CHB - 78, 80 <<<<<<<<<<<<<<<<<<<
+    Check_Create_User_Access: function(component, event, helper){
+        var action1 = component.get("c.CheckUserAccess");
+        action1.setParams({
+            AccessType: 'Create'
+        });
+        action1.setCallback(this, function(response) {
+            console.log('CheckUserHaveAcces >> ',response.getReturnValue());
+            if(response.getReturnValue() == 'True'){
+               component.set("v.HaveCreateAccess", true);
+            }
+            else if(response.getReturnValue() == 'False'){
+                component.set("v.HaveCreateAccess", false);
+            }
+        });
+        $A.enqueueAction(action1);
+    },
+
+    Check_Update_User_Access: function(component, event, helper){
+        var action1 = component.get("c.CheckUserAccess");
+        action1.setParams({
+            AccessType: 'Update'
+        });
+        action1.setCallback(this, function(response) {
+            console.log('CheckUserHaveAcces >> ',response.getReturnValue());
+            if(response.getReturnValue() == 'True'){
+               component.set("v.HaveUpdateAccess", true);
+            }
+            else if(response.getReturnValue() == 'False'){
+                component.set("v.HaveUpdateAccess", false);
+            }
+        });
+        $A.enqueueAction(action1);
+    },
+
+    Check_Delete_User_Access: function(component, event, helper){
+        var action1 = component.get("c.CheckUserAccess");
+        action1.setParams({
+            AccessType: 'Delete'
+        });
+        action1.setCallback(this, function(response) {
+            console.log('CheckUserHaveAcces >> ',response.getReturnValue());
+            if(response.getReturnValue() == 'True'){
+               component.set("v.HaveDeleteAccess", true);
+            }
+            else if(response.getReturnValue() == 'False'){
+                component.set("v.HaveDeleteAccess", false);
+            }
+        });
+        $A.enqueueAction(action1);
+    },
 
 
 })

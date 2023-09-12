@@ -66,14 +66,31 @@
 
 ({
 
+    doInit: function (component, event, helper) {
+        helper.Check_Create_User_Access(component, event, helper);
+    },
     
     
     save: function (component, event, helper) {
-       // alert("haiii");
-    $A.util.addClass(component.find("uploading").getElement(), "uploading");
-    document.getElementById("uploadingCSVSpinnerText").innerHTML = '';  //Remove text for BUIL-2690
-    helper.save(component, helper);
-  },
+        if(component.get("v.HaveCreateAccess")){
+            // alert("haiii");
+        //  $A.util.addClass(component.find("uploading").getElement(), "uploading");
+        //  document.getElementById("uploadingCSVSpinnerText").innerHTML = '';  //Remove text for BUIL-2690
+         helper.save(component, helper);
+       }
+       else{
+        component.find('notifLib').showNotice({
+            "variant": "error",
+            "header": "Error!",
+            "message": "You don\'t have the necessary privileges to Create record.",
+            closeCallback: function () {
+                $A.get("e.c:BT_SpinnerEvent").setParams({
+                    "action": "HIDE"
+                }).fire();
+            }
+        });
+       }
+        },
 
   onFileSelected: function (component, event, helper) {
     var fullPath = document.getElementById("file-upload-input-01").value;
@@ -82,18 +99,18 @@
   },
 
 
-  waiting: function (component, event, helper) {
-    $A.util.addClass(component.find("uploading").getElement(), "uploading");
-    $A.util.removeClass(
-      component.find("uploading").getElement(),
-      "notUploading"
-    );
-  },
+//   waiting: function (component, event, helper) {
+//     $A.util.addClass(component.find("uploading").getElement(), "uploading");
+//     $A.util.removeClass(
+//       component.find("uploading").getElement(),
+//       "notUploading"
+//     );
+//   },
 
-  doneWaiting: function (component, event, helper) {
-    $A.util.removeClass(component.find("uploading").getElement(), "uploading");
-    $A.util.addClass(component.find("uploading").getElement(), "notUploading");
-  },
+//   doneWaiting: function (component, event, helper) {
+//     $A.util.removeClass(component.find("uploading").getElement(), "uploading");
+//     $A.util.addClass(component.find("uploading").getElement(), "notUploading");
+//   },
     
       downloadCsv : function(component,event,helper){
         var csv = helper.convertArrayOfObjectsToCSV(component,event,helper);   

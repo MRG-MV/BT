@@ -1101,6 +1101,17 @@
                         component.set("v.TotalRecords", result);
                         component.set("v.TotalRecordsCopy", result);
                         console.log('budget lines::', result);
+                        
+                    }
+
+                    // To set slds_tab_defaul height for responsive display ==> BUIL - 3466
+                    console.log('v.total 2 => ', component.get("v.total"));
+                    var total = component.get("v.total");
+                    if(total > 60){
+                        component.set("v.slds_tab_height_diff", '42px');
+                    }
+                    else{
+                        component.set("v.slds_tab_height_diff", '0px');
                     }
 
                     $A.get("e.c:BT_SpinnerEvent").setParams({
@@ -1211,9 +1222,7 @@
         });
         $A.enqueueAction(action);
     },
-
     fetchpricebooks: function (component, event, helper) {
-        console.log('FETCH Pricebook');
         var actions = component.get("c.getpricebooks");
         actions.setParams({
             recordId: component.get("v.recordId"),
@@ -1226,18 +1235,35 @@
                 let projectHavePricebook=result[0].defaultValue;
                 var pricebookOptions = [];
                 if(Object.keys(projectHavePricebook).length !=0){
+                    pricebookOptions.push({ key: projectHavePricebook.Name, value: projectHavePricebook.Id });
+                    result[0].priceWrapList.forEach(function(element){
+                        if(projectHavePricebook.Id !== element.Id){
+                            pricebookOptions.push({ key: element.Name, value: element.Id });
+                        }else{
+                            pricebookOptions.push({ key: "None", value: "" });
+
+                        }
+                    });
                     component.set('v.pricebookName' , projectHavePricebook.Id);
+
+                }else{
+                    pricebookOptions.push({ key: "None", value: "" });
+                    result[0].priceWrapList.forEach(function(element){
+                        pricebookOptions.push({ key: element.Name, value: element.Id });
+                    });
+                    component.set("v.pricebookName", pricebookOptions[0].value);                
+
                 }
-                
-                pricebookOptions.push({ key: "None", value: "" });
-                result[0].priceWrapList.forEach(function(element){
-                    pricebookOptions.push({ key: element.Name, value: element.Id });
-                });  
+
+                if(component.get('v.pricebookName')!= undefined || component.get('v.pricebookName')!=null){
+                    helper.changeEventHelper(component, event, helper);
+                }
                 component.set("v.pricebookoptions", pricebookOptions);
             }
         });
         $A.enqueueAction(actions);
     },
+
 
     fetchPickListVal: function (component, event, helper) {
         var actions = component.get("c.getselectOptions");
@@ -2390,16 +2416,21 @@
         console.log('isBudget',isBudget);
         var headerDiv = component.find("headerDiv");
         console.log('headerDiv',headerDiv);
+        console.log('v.total => ', component.get("v.total"));
         
         // Check if the current URL contains a specific keyword or phrase
+        // To set slds_tab_defaul height for responsive display ==> BUIL - 3466
         if (isBudget) {
             console.log('in if');
-            $A.util.addClass(headerDiv, "divconts");
+            $A.util.addClass(headerDiv, "divconts1");
+            $A.util.removeClass(headerDiv, "divconts2");
         } else {
             console.log('in else');
-            $A.util.removeClass(headerDiv, "divconts");
+            $A.util.addClass(headerDiv, "divconts2");
+            $A.util.removeClass(headerDiv, "divconts1");
         }
     },
+
     addInvoicePOHelper:function (component, event, helper) {
 
         component.set('v.addInvoicePOSection' , true);
@@ -2426,7 +2457,61 @@
 
         });
         $A.enqueueAction(action);
-    }
+
+    },
+
+    // >>>>>>>>>>>>>> CHB - 78, 80 <<<<<<<<<<<<<<<<<<<
+    Check_Create_User_Access: function(component, event, helper){
+        var action1 = component.get("c.CheckUserAccess");
+        action1.setParams({
+            AccessType: 'Create'
+        });
+        action1.setCallback(this, function(response) {
+            console.log('CheckUserHaveAcces >> ',response.getReturnValue());
+            if(response.getReturnValue() == 'True'){
+               component.set("v.HaveCreateAccess", true);
+            }
+            else if(response.getReturnValue() == 'False'){
+                component.set("v.HaveCreateAccess", false);
+            }
+        });
+        $A.enqueueAction(action1);
+    },
+
+    // >>>>>>>>>>>>>>>>>>> CHB - 79 <<<<<<<<<<<<<<<<<<<<<<<<,,
+    Check_Update_User_Access: function(component, event, helper){
+        var action1 = component.get("c.CheckUserAccess");
+        action1.setParams({
+            AccessType: 'Update'
+        });
+        action1.setCallback(this, function(response) {
+            console.log('CheckUserHaveAcces >> ',response.getReturnValue());
+            if(response.getReturnValue() == 'True'){
+               component.set("v.HaveUpdateAccess", true);
+            }
+            else if(response.getReturnValue() == 'False'){
+                component.set("v.HaveUpdateAccess", false);
+            }
+        });
+        $A.enqueueAction(action1);
+    },
+
+    Check_Delete_User_Access: function(component, event, helper){
+        var action1 = component.get("c.CheckUserAccess");
+        action1.setParams({
+            AccessType: 'Delete'
+        });
+        action1.setCallback(this, function(response) {
+            console.log('CheckUserHaveAcces >> ',response.getReturnValue());
+            if(response.getReturnValue() == 'True'){
+               component.set("v.HaveDeleteAccess", true);
+            }
+            else if(response.getReturnValue() == 'False'){
+                component.set("v.HaveDeleteAccess", false);
+            }
+        });
+        $A.enqueueAction(action1);
+    },
     
     
 })

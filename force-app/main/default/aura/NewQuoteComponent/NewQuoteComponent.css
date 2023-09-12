@@ -6,3 +6,7 @@
     white-space: nowrap;
     font-size: 20px;
 }
+.THIS .mainContent::-webkit-scrollbar {
+    display: none;
+
+}

@@ -1,5 +1,7 @@
 <aura:component controller="OverrideNewProjectTakeoffLineController" implements="force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global">
     <aura:attribute name="parentRecordId" type="String" />
+    <aura:attribute name="parentTakeOffId" type="String" />
+
     <aura:attribute name="isSaveNew" type="boolean" default="false"/>
     <aura:attribute name="isOpen" type="boolean" default="false" />
     <aura:attribute name="Spinner" type="boolean" default="false" />
@@ -23,6 +25,9 @@
     <ltng:require styles="{!$Resource.ModalPreview62moreMedia}" />
     <lightning:notificationsLibrary aura:id="notifLib" />
     <lightning:workspaceAPI aura:id="workspace" />
+
+    <aura:attribute name="listOfFields0" type="List" />
+
 
     <aura:if isTrue="{!v.Spinner}">
         <div aura:id="spinnerId" class="slds-spinner_container">
@@ -53,22 +58,18 @@
         </header>
         <div class="slds-modal__content" id="modal-content-id-1">
 
-            <lightning:recordEditForm aura:id="recordViewForm" objectApiName="buildertek__Project_Takeoff_Lines__c" onsubmit="{!c.handleSubmit}" density="Comfy" >
+            <lightning:recordEditForm aura:id="recordViewForm" objectApiName="buildertek__Project_Takeoff_Lines__c" onsubmit="{!c.handleSubmit}"  density="Comfy" >
                     <div class="" style="height:50vh;width:100%;overflow: auto;">
                         <div class="slds-p-around_medium" style="background-color:white;">
                             <lightning:layout multipleRows="true">
                                 <aura:iteration items="{!v.listOfFields0}" var="field">
                                     <lightning:layoutItem size="12" mediumDeviceSize="6" padding="around-small">
-                                        <aura:if isTrue="{!and(field.name!='buildertek__Project__c',field.name!='Name')}">
+                                        <aura:if  isTrue="{!field.name !='buildertek__Project_Takeoff__c'}">
                                             <lightning:inputField fieldName="{!field.name}" />
                                             <aura:set attribute="else">
-                                                <aura:if isTrue="{!field.name=='Name'}" >
-                                                    <lightning:inputField fieldName="Name" required="true"/>
-                                                </aura:if>
-                                                <aura:if isTrue="{!field.name=='buildertek__Project__c'}" >
-                                                    <lightning:inputField fieldName="{!field.name}" value="{!v.parentprojectRecordId}" />
-                                                </aura:if>
+                                                <lightning:inputField fieldName="{!field.name}" value = "{!v.parentTakeOffId}" aura:id="projectTakeOff" />
                                             </aura:set>
+                                            
                                         </aura:if>
                                     </lightning:layoutItem>
                                 </aura:iteration>
@@ -77,7 +78,7 @@
                     </div>
                     <footer aura:id="footer" class="slds-modal__footer">
                         <lightning:button variant="neutral" title="Cancel" label="Cancel" onclick="{! c.closeModel }" />
-                        <lightning:button variant="neutral" type="submit" title="Save &amp; New" label="Save &amp; New" onclick="{!c.handlesaveNnew}" />
+                        <lightning:button variant="neutral" type="submit" title="Save &amp; New" label="Save &amp; New" onclick="{!c.saveAndNew}" />
                         <lightning:button variant="brand" type="submit" name="save" label="Save" disabled="{!v.isDisabled}"/>
                     </footer>
                 </lightning:recordEditForm>

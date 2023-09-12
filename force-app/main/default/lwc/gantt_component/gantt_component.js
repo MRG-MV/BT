@@ -19,7 +19,8 @@ import {
   formatApexDatatoJSData,
   recordsTobeDeleted,
   makeComboBoxDataForContractor,
-  calcBusinessDays
+  calcBusinessDays,
+  makeComboBoxDataForResourceData
 } from "./gantt_componentHelper";
 import { populateIcons } from "./lib/BryntumGanttIcons";
 
@@ -165,7 +166,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       loadScript(this, GANTTModule),
       loadStyle(this, GanttStyle + "/gantt.stockholm.css"),
       console.log("Loaded libraries"),
-      // loadStyle(this, GanttStyle + "/gantt.stockholm.css")
     ])
       .then(() => {
         // this.handleHideSpinner();
@@ -602,8 +602,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
     resourceRowData = formatedSchData["resourceRowData"];
     assignmentRowData = formatedSchData["assignmentRowData"];
 
-    // //this.spinnerDataTable = false;
-    console.log('resourceRowData ',resourceRowData);
+    let resourceData = makeComboBoxDataForResourceData(this.contractorAndResources);
 
     const project = new bryntum.gantt.ProjectModel({
       calendar: data.project.calendar,
@@ -611,7 +610,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       // tasksData: data.tasks.rows,
       tasksData: tasks.rows,
       skipNonWorkingTimeWhenSchedulingManually: true,
-      resourcesData: data.resources.rows,
+      resourcesData: resourceData,
       // assignmentsData: data.assignments.rows,
       assignmentsData: assignmentRowData,
       // dependenciesData: data.dependencies.rows,
@@ -729,7 +728,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
             }
           }
         },
-        {
+        /* {
           type: "widget",
           text: "Contractor",
           draggable: false,
@@ -738,10 +737,7 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
             {
               type: "Combo",
               items: contractorComboData,
-              name: 'contractorId',
-              listeners : {
-                change : 'up.onContractorInput'
-              },
+              name: "contractorId",
             },
           ],
           renderer: (record) => {
@@ -759,31 +755,34 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         {
           type : 'resourceassignment',
           width : 120,
-          showAvatars : true,
+          showAvatars : false,
           draggable : false,
           editor      : {
             picker : {
-                height   : 350,
-                width    : 450,
-                features : {
-                    filterBar  : true,
-                    group      : 'resource.city',
-                    headerMenu : false,
-                    cellMenu   : false,
-                },
-                // The extra columns are concatenated onto the base column set.
-                columns : [{
-                    text       : 'Calendar',
-                    // Read a nested property (name) from the resource calendar
-                    field      : 'resource.calendar.name',
-                    filterable : false,
-                    editor     : false,
-                    width      : 85
-                }]
+              height   : 350,
+              width    : 450,
+              selectionMode: {
+                rowCheckboxSelection: true,
+                multiSelect: false,
+                showCheckAll: false,
+              },
+              features : {
+                  filterBar  : true,
+                  group      : 'resource.type',
+                  multiSelect: false,
+                  headerMenu : false,
+                  cellMenu   : false,
+              },
+            },
+            listeners: {
+              paint: ({ source }) => {
+                let contractorId = source._projectEvent._data.contractorId
+                source.store.filter(record => record.resource._data.contractorId == contractorId);
+              }
             }
-          }
-
-        },
+          },
+          itemTpl : assignment => assignment.resourceName
+        }, */
         // {
         //   type: "addnew",
         // },
@@ -985,11 +984,6 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
         // },
       },
 
-      //* this method is used for getting contractor Id to filter resources
-      onContractorInput(event){
-        console.log('onContractorInput method called',event.value);
-      },
-
       listeners: {
         taskMenuBeforeShow({ record }) {
           // put your location here where you want to disable the task menu
@@ -1024,9 +1018,21 @@ export default class Gantt_component extends NavigationMixin(LightningElement) {
       gantt.scrollTaskIntoView(record);
     });
 
-    gantt.callGanttComponent = this;
+    gantt.on('beforeTaskChange', ({event}) => {
+      console.log('beforeTaskChange ',event.record);
+      var task = event.record;
+      var resources = task.getResources();
 
-    console.log("gantt:-", gantt);
+      // Check if the task already has two resources assigned
+      if (resources.length >= 2) {
+        // Prevent adding or removing resources
+        if (event.field === 'resources') {
+          event.preventDefault();
+        }
+      }
+    });
+
+    gantt.callGanttComponent = this;
 
     gantt.on("addSuccessor", (event) => {
       // Get the data of the new task.
