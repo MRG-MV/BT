@@ -13,9 +13,9 @@
     </div>
     <!-- ============== Spinner =========== -->
 
+    <center><lightning-button label="Add New Files" onclick={handleAddFiles}></lightning-button></center>
     <div if:true={showtable}> 
     <template if:true={RelatedJunObj}>
-        <lightning-button label="Add New Files" onclick={handleAddFiles}></lightning-button>
         <lightning-card title="Files Table">
         <table class="mainTable">
             <thead>

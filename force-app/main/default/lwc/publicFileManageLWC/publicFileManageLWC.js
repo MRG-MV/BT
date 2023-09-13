@@ -13,7 +13,7 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
 
     @api folderids;
     @track RelatedJunObj;
-    @api recordId;
+    @api projectid;
 
     @track SelectedFiles = [];
     @track EditedRecords = [];
@@ -38,7 +38,8 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
 
     loadFileFolderJunctionData() {
         this.spinnerDataTable=false;
-
+        this.showfiles = false;
+        this.showtable = true;
         getAllFileFolderJunctionObj({FolderIds : this.folderids})
             .then(result => {
                 console.log('result >> ', JSON.parse(JSON.stringify(result)));
@@ -249,7 +250,8 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
     }
 
     getFilesforselectedRecord(){
-        getContentDocuments({recordId:this.recordId})
+        console.log(this.projectid)
+        getContentDocuments({recordId:this.projectid})
             .then ((response) =>{
                 console.log(response)
                 console.log(typeof(response))
@@ -264,12 +266,12 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
 
     handleConfirm(event){
         this.spinnerDataTable = true;
-        createPublicFileFolderJnc({ folderId : this.folderid , cdllist : this.selectedDocuments })
+        createPublicFileFolderJnc({ folderId : this.folderids , cdllist : this.selectedDocuments })
         .then((response) =>{
             console.log("Response on confirm click:- ",response);
             if(response == 'Success'){
                 this.template.querySelector('c-toast-component').showToast('success', 'Files are added to the selected folders and ready to be viewed publicly', 3000);
-                this.spinnerDataTable = false
+                this.loadFileFolderJunctionData()
             }
         })
     }

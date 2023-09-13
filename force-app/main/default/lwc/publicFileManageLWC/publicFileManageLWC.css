@@ -113,3 +113,33 @@ table tbody tr td {
     padding: 10px 16px;
     border-bottom: 1px solid #eee;
 }
+
+.container {
+    display: flex;
+}
+
+.section {
+    flex: 1;
+    padding: 25px;
+    border: 1px solid #ccc;
+    margin: 10px;
+}
+
+.document {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.slds-modal__container {
+    margin: 0 auto;
+    width: 80%;
+    max-width: 60%;
+    min-width: 20rem;
+    padding: 5%;
+    --slds-c-modal-radius-border: 14px;
+}

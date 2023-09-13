@@ -2,6 +2,8 @@ public without sharing class PublicFileShareController {
 
     @AuraEnabled
     public static List<ContentDocumentLink> getContentDocuments( Id recordId){
+
+        System.debug('recordId:- '+ recordId);
         
         List<ContentDocumentLink> cdlist = new List<ContentDocumentLink>();
         cdlist = [SELECT Id, ContentDocument.Title, ContentDocumentId, ContentDocument.LatestPublishedVersionId
@@ -181,10 +183,10 @@ public without sharing class PublicFileShareController {
         try {
             system.debug('FolderIds >> '+ FolderIds);
             List<buildertek__Public_File_Folder_Jn__c> JunObj = [SELECT ID, Name,
-                                                                        buildertek__Public_File__r.Id, buildertek__Public_File__r.Name,buildertek__Public_File__r.buildertek__File_Name__c,
+                                                                        buildertek__Public_File__r.Id, buildertek__Public_File__r.Name,buildertek__Public_File__r.buildertek__File_Name__c,buildertek__Public_File__r.buildertek__Public_URL__c,
                                                                         buildertek__Public_Folder__r.Id, buildertek__Public_Folder__r.Name
                                                                         FROM buildertek__Public_File_Folder_Jn__c WHERE buildertek__Public_Folder__c = : FolderIds];
-            system.debug('JunObj >> ' + JunObj);
+            system.debug('JunObj >> ' + JunObj[0]);
             
             return JunObj;
         } catch (Exception e) {
