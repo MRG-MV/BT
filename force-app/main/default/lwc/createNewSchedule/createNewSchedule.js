@@ -252,20 +252,11 @@ export default class CreateNewSchedule extends NavigationMixin(LightningElement)
                     this.dispatchEvent(event);
                 })
                 .finally(() => {
-                    // this.template.querySelector('form').reset();
-                    let form = document.getElementById("form");
-                    let fieldsToKeep = ["searchProjectName"];
-                    let inputs = form.getElementsByTagName("input");
-
-                    for (let i = 0; i < inputs.length; i++) {
-                        if (inputs[i].type == "text" && fieldsToKeep.indexOf(inputs[i].name) === -1) {
-                            inputs[i].value = "";
-                        }
-                    }
+                    this.template.querySelector('form').reset();
                     if (!this.projectSchedule) {
                         this.searchProjectName = '';
                         this.showProjectIcon = false;
-                        this.isInputEnabledForProject = true;
+                        this.isInputEnabledForProject = false;
                         this.projectId = undefined;
                     }
                     this.description = '';

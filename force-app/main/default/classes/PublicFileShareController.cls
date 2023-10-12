@@ -1,34 +1,60 @@
 public without sharing class PublicFileShareController {
 
     @AuraEnabled
-    public static List<ContentDocumentLink> getContentDocuments( Id recordId){
+    public static List<ContentDocumentLink> getContentDocuments( Id recordId, Id folderId){
 
         System.debug('recordId:- '+ recordId);
         
         List<ContentDocumentLink> cdlist = new List<ContentDocumentLink>();
+        List<ContentDocumentLink> cdlist2 = new List<ContentDocumentLink>();
+
         cdlist = [SELECT Id, ContentDocument.Title, ContentDocumentId, ContentDocument.LatestPublishedVersionId
                         FROM ContentDocumentLink
                         WHERE LinkedEntityId = :recordId];
 
-        return cdlist;
+        System.debug('cdlist :- '+cdlist);
+
+        List<buildertek__Public_File_Folder_Jn__c> publicfilefolderjnc = new List<buildertek__Public_File_Folder_Jn__c>();
+
+        publicfilefolderjnc = [SELECT buildertek__Public_File__r.buildertek__Content_Version__c, buildertek__Public_Folder__c FROM buildertek__Public_File_Folder_Jn__c where buildertek__Public_Folder__c = :folderId];
+
+        System.debug('publicfilefolderjnc:- '+publicfilefolderjnc);
+
+        Set<Id> converIds = new Set<Id>();
+        for (buildertek__Public_File_Folder_Jn__c obj : publicfilefolderjnc) {
+            converIds.add(obj.buildertek__Public_File__r.buildertek__Content_Version__c);
+        } 
+
+        System.debug('converids:- '+ converIds);
+
+        for (ContentDocumentLink sd : cdlist){
+            if(!(converIds.contains(sd.ContentDocument.LatestPublishedVersionId))){
+                cdlist2.add(sd);
+            }
+        }
+
+        System.debug('cdlist2:- '+cdlist2);
+
+        return cdlist2;
     }
 
     @AuraEnabled
-    public static List<buildertek__Public_Folder__c> getFolderList(){
+    public static List<buildertek__Public_Folder__c> getFolderList(Id currentId){
 
         List<buildertek__Public_Folder__c> publicfolders = new List<buildertek__Public_Folder__c>();
         
-        publicfolders = [SELECT Id, buildertek__File_Count__c, Name, buildertek__Description__c FROM buildertek__Public_Folder__c];
+        publicfolders = [SELECT Id, buildertek__File_Count__c, Name, buildertek__Description__c FROM buildertek__Public_Folder__c WHERE buildertek__RelatedToId__c = :currentId];
 
         return publicfolders;
     }
 
     @AuraEnabled
-    public static String createPublicFolder(String Fname, String Fdesc){
+    public static String createPublicFolder(String Fname, String Fdesc, Id currentId){
 
         buildertek__Public_Folder__c publicfol = new buildertek__Public_Folder__c();
         publicfol.Name = Fname;
         publicfol.buildertek__Description__c = Fdesc;
+        publicfol.buildertek__RelatedToId__c = currentId;
 
         insert publicfol;
 
@@ -198,6 +224,7 @@ public without sharing class PublicFileShareController {
     @AuraEnabled
     public static string UpdateFileName(List<Map<String, String>> UpdatedRecords){
         try {
+            system.debug('UpdatedRecords >> ' + UpdatedRecords);
             list<buildertek__Public_File__c> fileRecordsToUpdate = new list<buildertek__Public_File__c>();
 
             for(Map<String, String> obj : UpdatedRecords){
@@ -242,4 +269,19 @@ public without sharing class PublicFileShareController {
             delete publicFileFolderJnList;
         }
     }
+
+    @AuraEnabled
+    public static String deleteFolder( Id publicFolderId ){
+        try {
+            System.debug('deleteFolder');
+            List<buildertek__Public_Folder__c>  publicFolderList = [SELECT Id, Name FROM buildertek__Public_Folder__c WHERE Id = :publicFolderId];
+            if(!publicFolderList.isEmpty()){
+                delete publicFolderList;
+            }
+            return 'Success';
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
 }

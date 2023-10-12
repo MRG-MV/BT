@@ -128,13 +128,14 @@
             cc: ccIds,
             fileid: signid,
             emailIds: emailIds,
-            memovalue: component.get("v.memoquote")
+            memovalue: component.get("v.memoquote"),
+            emailBodyValue: component.get("v.templateEmailBody")
+
         });
         action.setCallback(this, function(response) {
             var state = response.getState();
             var subject = 'Quote[ref:' + component.get("v.recordId") + ']';
             if (state === "SUCCESS") {
-                component.set("v.Spinner", false);
                 var result = response.getReturnValue();
                 if (result === 'Success') {
                     component.set("v.Spinner", false);
@@ -162,7 +163,7 @@
 
         $A.enqueueAction(action);
 
-        // component.set("v.Spinner", false);
+        component.set("v.Spinner", false);
 
 
     },
@@ -210,19 +211,51 @@
 
     },
     getmemovalue: function(component, event, helper) {
-        var action = component.get("c.getmemoval");
-        action.setParams({
-            recordId: component.get("v.recordId")
-        });
-        action.setCallback(this, function(response) {
-            var state = response.getState();
-            var result = response.getReturnValue();
-            if (state === "SUCCESS") {
-                component.set("v.memoquote", result.buildertek__Memo__c);
-            }
-        });
+        try {
+            var action = component.get("c.getmemoval");
+            action.setParams({
+                recordId: component.get("v.recordId")
+            });
+            action.setCallback(this, function(response) {
+                var state = response.getState();
+                var result = response.getReturnValue();
+                console.log('result-->',result);
+                if (state === "SUCCESS") {
+                    var result = JSON.parse(response.getReturnValue());
+                    if (result.memo != null) {
+                        component.set("v.memoquote", result.memo);
+                    }
+                    if (result.companyname != null) {
+                        component.set("v.companyName", result.companyname);
+                    }
+                    if (result.siteUrl != null) {
+                        component.set("v.siteURL", result.siteUrl);
+                    }
+                    if (result.salesRepName != null) {
+                        component.set("v.salesRep", result.salesRepName);
+                    }
+                    if (result.orgName != null) {
+                        component.set("v.orgName", result.orgName);
+                    }                   
+                    if (result.emailBody != null) {
+                        component.set("v.templateEmailBody", result.emailBody);
+                    }
+                    
+                } else{
+                    var toastEvent = $A.get("e.force:showToast");
+                        toastEvent.setParams({
+                            "type": 'error',
+                            "message": result
+                        });
+                        toastEvent.fire();
+                }
+            });
 
-        $A.enqueueAction(action);
+            $A.enqueueAction(action);
+        } catch (error) {
+            console.log('error-->',error);
+        }
+        
     },
 
 })

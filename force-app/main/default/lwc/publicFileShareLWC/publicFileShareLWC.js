@@ -2,6 +2,7 @@ import { LightningElement, track, wire, api } from 'lwc';
 import getFolderList from "@salesforce/apex/PublicFileShareController.getFolderList";
 import createPublicFolder from "@salesforce/apex/PublicFileShareController.createPublicFolder";
 import ConfirmationPageSiteURL from "@salesforce/apex/PublicFileShareController.ConfirmationPageSiteUR";
+import deleteFolder from "@salesforce/apex/PublicFileShareController.deleteFolder";
 import {NavigationMixin} from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -12,6 +13,7 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
     @track folderData = [];
     @track selectedFolder = '';
     @track showManageFolder = false;
+    @track showFolderTable = false;
 
     @track showNewFolderPopup = false;
     @track newFolderName = '';
@@ -27,10 +29,15 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
     }
 
     getFolderDataFromApex(){
-        getFolderList()
+        getFolderList({ currentId : this.recordId })
             .then((response) =>{
                 console.log("FolderData:- ",response);
                 this.folderData = response;
+                if(this.folderData.length > 0){
+                    this.showFolderTable = true;
+                } else {
+                    this.showFolderTable = false;
+                }
                 this.spinnerDataTable = false
             });
     }
@@ -56,19 +63,23 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
     }
 
     createFolder(){
-            if(this.newFolderName == null || this.newFolderName == ''){
+        console.log('newFolderName :- ',this.newFolderName);
+        this.newFolderName = this.newFolderName.replace(/^\s+/g, '');
+            if(this.newFolderName == null || this.newFolderName == ' ' || this.newFolderName == ''){
                 // this.template.querySelector('c-toast-component').showToast('error', 'Name is Required, Please Fill the Name', 3000);
                 this.showToast('error', 'Name is Required, Please Fill the Name', 'Uh oh, something went wrong');
             }
             else{
                 this.spinnerDataTable = true
                 this.showNewFolderPopup = false
-                createPublicFolder({ Fname : this.newFolderName, Fdesc : this.newFolderDescription })
+                createPublicFolder({ Fname : this.newFolderName, Fdesc : this.newFolderDescription, currentId : this.recordId })
                 .then((response) =>{
                     console.log('Response for create folder :- ',response);
+                    this.newFolderName = null;
+                    this.newFolderDescription = null;
                     this.getFolderDataFromApex()
                     // this.template.querySelector('c-toast-component').showToast('success', 'New Folder Created Successfully', 3000);
-                    this.showToast('success', 'New Folder Created Successfully', 'Yay! Everything worked!');
+                    this.showToast('success', 'New Folder Created Successfully', 'Success!');
                     this.spinnerDataTable = false
                 })
             }
@@ -125,4 +136,19 @@ export default class PublicFileShareLWC extends NavigationMixin(LightningElement
         this.dispatchEvent(event);
     }
 
+    Handle_DeleteFolder(event){
+        this.spinnerDataTable = true
+        console.log('record to delete:- ',event.currentTarget.dataset.key);
+        deleteFolder({publicFolderId : event.currentTarget.dataset.key})
+        .then((response) =>{
+            console.log("FolderData:- ",response);
+            if(response == 'Success'){
+                this.getFolderDataFromApex()
+                this.showToast('success', 'Folder has been Deleted Successfully', 'Success!');
+            } else {
+                this.showToast('error', 'Folder has not been Deleted', 'Something Went Wrong!');
+            }
+            this.spinnerDataTable = false
+        });
+    }
 }

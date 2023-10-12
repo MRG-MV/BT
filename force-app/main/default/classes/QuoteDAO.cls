@@ -1260,25 +1260,24 @@ public with sharing class QuoteDAO{
             system.debug('quote -----------> ' + quote);
 
             buildertek__Quote__c newQuote = quote.clone(false, true);
-            Decimal versionNumber;
+            Integer versionNumber;
             String quoteName = quote.Name;
 
 
             if (quote.buildertek__Version_Number__c == null){
-                versionNumber = 1.0;
-                //newQuote.Name = quote.Name + ' Ver ' + versionNumber;
+                versionNumber = 1;
                 newQuote.Name = quote.Name;
-                newQuote.buildertek__Version_Number__c = '1.0';
+                newQuote.buildertek__Version_Number__c = '1';
                 newQuote.buildertek__Status__c = 'Draft';
             } else{
-                versionNumber = Decimal.valueOf(quote.buildertek__Version_Number__c);
-                versionNumber = versionNumber + .1;
-                //quoteName = quoteName.right(1);
-                //quoteName = quoteName.replace(quoteName.right(1), String.valueOf(versionNumber));
+                versionNumber = Integer.valueOf(quote.buildertek__Version_Number__c);
+                versionNumber++;
                 newQuote.buildertek__Version_Number__c = String.valueOf(versionNumber);
                 newQuote.buildertek__Status__c = 'Draft';
             }
-
+            System.debug(versionNumber);
+            newQuote.buildertek__Original_Quote__c=quote.Id;
+            
             if (Schema.sObjectType.buildertek__Quote__c.fields.Name.isCreateable() && Schema.sObjectType.buildertek__Quote__c.fields.buildertek__Version_Number__c.isCreateable()){
                 insert newQuote;
             }
@@ -2276,6 +2275,34 @@ public with sharing class QuoteDAO{
 
         return islien;
     }   
+
+
+    @AuraEnabled
+    public static List<String> groupingLevels(){
+        buildertek__Admin_Interface_Node_Configuration__c adminInterfaceNodeConfigurations = [Select Id, buildertek__Grouping_Level_1__c,buildertek__Grouping_Level_2__c,buildertek__Grouping_Level_3__c,           buildertek__Grouping_Level_4__c   from buildertek__Admin_Interface_Node_Configuration__c   WHERE Name = :'Quote Configuration'];
+
+        String groupingLevel1= adminInterfaceNodeConfigurations.buildertek__Grouping_Level_1__c;
+        if(groupingLevel1 == null){
+            groupingLevel1='';
+        }
+        String groupingLevel2= adminInterfaceNodeConfigurations.buildertek__Grouping_Level_2__c;
+        if(groupingLevel2 == null){
+            groupingLevel2='';
+        }
+        String groupingLevel3= adminInterfaceNodeConfigurations.buildertek__Grouping_Level_3__c;
+        if(groupingLevel3 == null){
+            groupingLevel3='';
+        }
+        String groupingLevel4= adminInterfaceNodeConfigurations.buildertek__Grouping_Level_4__c;
+        if(groupingLevel4 == null){
+            groupingLevel4='';
+        }
+
+
+        List<String> groupingLevels = new List<String>{groupingLevel1, groupingLevel2,groupingLevel3,groupingLevel4};
+        return groupingLevels;
+    }   
+
 
     @AuraEnabled
     public static quoteLineWrapperClass getQuoteData(String quoteId, Integer pageNumber, Integer recordToDisply, List<String> groupingList){

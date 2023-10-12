@@ -49,7 +49,7 @@
                                                         <label class="rkclass"><span style="color: rgb(234, 0, 30);padding-right: 1px;">*</span>Purchase Order</label>
                                                         <div class="slds-input-has-icon slds-input-has-iconright" style="width:99%;" >
                                                             <aura:if isTrue="{!v.selectedPOName == ''}">
-                                                                <span class="slds-icon_container slds-combobox__input-entity-icon searchIcon" title="record">
+                                                                <span class="slds-icon_container slds-combobox__input-entity-icon searchIcon crossicon" title="record">
                                                                     <lightning:icon class="slds-icon slds-icon slds-icon_small" iconName="utility:search" size="x-small" alternativeText="icon"/>
                                                                     <span class="slds-assistive-text"></span>
                                                                 </span>

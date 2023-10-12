@@ -88,7 +88,7 @@ public with sharing class BT_SendEmailController{
     public Static String gettemplatebodyContent(String recordId, String templateId){
         string templateBody = '';
         string templateBody1 = '';
-
+        Boolean useSignature = false;
         Contact con ;
 
         con = [select id, Email from Contact where email != null order by createddate desc limit 1 ];
@@ -107,6 +107,7 @@ public with sharing class BT_SendEmailController{
         email.setTargetObjectId(con.Id);
         email.setSaveAsActivity(false);
         email.setToAddresses(toaddres);
+        email.setUseSignature(useSignature);
        // email.setHtmlBody(templateRecordList[0].Body);
         msgList.add(email);
         system.debug('&&&&&recordId'+recordId);
@@ -283,6 +284,7 @@ public with sharing class BT_SendEmailController{
     @AuraEnabled
     public Static String SendEmail(List<String> to, List<String> cc, List<String> files, String subject, String body, String recordId, String templateId, String pdfFileName,List<String> emailIds){
         try{
+            Boolean useSignature = false;
             system.debug('files-->'+files);
             List<string> strTO = new List<string>();
             List<string> strCC = new List<string>();
@@ -430,7 +432,7 @@ public with sharing class BT_SendEmailController{
                     mail.setTemplateId(templateId);
                     mail.setWhatId(recordId);
                     mail.setTargetObjectId(conList[0].Id);
-
+                    mail.setUseSignature(useSignature);
                     Savepoint sp = Database.setSavepoint();
                     Messaging.SendEmailResult[] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
                     Database.rollback(sp);
@@ -471,7 +473,15 @@ public with sharing class BT_SendEmailController{
                     subject = subject + ' Quote - [ref:' + recordId + ']';
                 }
                 //subject = subject + ' Quote - [ref:' + recordId + ']';
-                body = body;
+
+                // ------------  Changes for BUIL-3535 starts from here  -------------------
+
+                body = body.replaceAll('<p><br></p>', '<br>');
+                body = body.replaceAll('<p>', '<p style="margin-top: 0em; margin-bottom: 0em; ">');
+                // body = body;
+
+                // ------------  Changes for BUIL-3535 ends here  -------------------
+
                 system.debug('Final body -------> ' + body);
 
             }
@@ -608,6 +618,7 @@ public with sharing class BT_SendEmailController{
             system.debug('fileAttachments ----->' + fileAttachments);
             system.debug('contentVersionIds ----->' + contentVersionIds);
             mail.setEntityAttachments(contentVersionIds);
+            mail.setUseSignature(useSignature);
             if(Id.valueOf(recordId).getSObjectType().getDescribe().getName() == 'buildertek__Change_Order__c'){
             mail.setFileAttachments(fileAttachments);
             }
@@ -946,6 +957,7 @@ public with sharing class BT_SendEmailController{
     public static String getEmailBodyFromTemplate(String parentRecordID, String vendorID, String templateId, String emailTemplateName){
         //system.debug(''+vendorID);
         // Pick a dummy Contact
+        Boolean useSignature = false;
         if (vendorID == null){
             Contact c;
             if (Schema.sObjectType.Contact.fields.Id.isAccessible() && Schema.sObjectType.Contact.fields.Email.isAccessible()){
@@ -988,7 +1000,7 @@ public with sharing class BT_SendEmailController{
                                from EmailTemplate
                                where Name = :emailTemplateName and isActive = true].id);
         msg.setWhatId(parentRecordID);
-
+        msg.setUseSignature(useSignature);
         System.debug(templateId + '---' + emailTemplateName +'==='+ parentRecordID);
 
         msg.setTargetObjectId(ID.valueOf(vendorID));
@@ -1269,7 +1281,7 @@ public with sharing class BT_SendEmailController{
 
         // changeOdrList1 = getChangeOrders(recordId);
         System.debug('recordId>>>'+recordId);
-
+        Boolean useSignature = false;
          string templateBody = '';
         string templateBody1 = '';
         string templateBody2 = '';
@@ -1291,6 +1303,7 @@ public with sharing class BT_SendEmailController{
         email.setTargetObjectId(con.Id);
         email.setSaveAsActivity(true);
         email.setToAddresses(toaddres);
+        email.setUseSignature(useSignature);
         msgList.add(email);
 
         // Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
@@ -1404,7 +1417,7 @@ public with sharing class BT_SendEmailController{
     public static String sendEmailApex1(List<String> to, List<String> cc, String emailsubject, String emailBody,String recordId) {
 
         try{
-
+            Boolean useSignature = false;
             List<Contact> tolst = [SELECT Id,Name,Email FROM Contact where ID IN:to];
             List<Contact> cclst = [SELECT Id,Name,Email FROM Contact where ID IN:cc];
 
@@ -1466,7 +1479,7 @@ public with sharing class BT_SendEmailController{
             emailAttachment.setFileName(filename);
             emailAttachment.setBody(pageData);
             mail.setFileAttachments(new Messaging.EmailFileAttachment[]{emailAttachment});
-
+            mail.setUseSignature(useSignature);
 
             Messaging.sendEmail(new List<messaging.SingleEmailMessage> {mail});
             return 'Success';

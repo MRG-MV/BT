@@ -4,6 +4,7 @@ import  UpdateFileName from "@salesforce/apex/PublicFileShareController.UpdateFi
 import  getContentDocuments from "@salesforce/apex/PublicFileShareController.getContentDocuments";
 import createPublicFileFolderJnc from "@salesforce/apex/PublicFileShareController.createPublicFileFolderJnc";
 import deleteFile from "@salesforce/apex/PublicFileShareController.deleteFile";
+import LightningAlert from "lightning/alert";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 
@@ -23,6 +24,9 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
     @track selectedDocuments = [];
     @track contentDocuments = [];
     @track spinnerDataTable=false;
+
+    @track showfilemessage = false;
+    @track showfiletable = false;
 
 
     connectedCallback(){
@@ -85,6 +89,15 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
                     buildertek__File_Name__c : event.target.value
                 })
             }
+
+            // Make "Save Chnages" Button Disable and Unable
+            const SaveBtn = this.template.querySelector('[data-name="SaveChanges"]');
+            if(this.EditedRecords.length > 0){
+                SaveBtn.disabled = false;
+            }
+            else if(this.EditedRecords.length == 0){
+                SaveBtn.disabled = true;
+            }
             
             
         } catch (error) {
@@ -96,11 +109,16 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
     handle_SaveChanges(event){
         try {
             console.log('this.EditedRecords', JSON.parse(JSON.stringify(this.EditedRecords)));
+            if(this.EditedRecords.length == 0){
+                this.showToast('success', 'Everything up to date', '');
+                return;
+            }
             UpdateFileName({UpdatedRecords : this.EditedRecords})
             .then(result => {
                 console.log('result >. ', result);
                 this.EditedRecords.splice(0, this.EditedRecords.length);
                 console.log('afetr update this.EditedRecords', JSON.parse(JSON.stringify(this.EditedRecords)));
+                this.showToast('success', 'File Name Updated Successfully', '');
             })
             .catch(error => {
                 console.log('error >> ', error);
@@ -175,6 +193,7 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
                         console.log("Response on confirm delete:- ",response);
                         this.loadFileFolderJunctionData();
                         this.showToast('success', 'File  was deleted', '');
+                        this.dispatchEvent(new CustomEvent('datarefresh'));
                     })
                     .catch(error => {
                         console.log('error in  apex call >> ', error);
@@ -184,8 +203,9 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
                 
             }
             else{
+                this.loadFileFolderJunctionData();
                 this.spinnerDataTable=false;
-                this.showToast('error', 'Something went wrong.', '');
+                this.showToast('error', 'Please Select at least one Record', '');
             }
             
         } catch (error) {
@@ -195,6 +215,14 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
     }
 
     handle_BackButton(event){
+        // If Changse Are not Save Then show Alert Popup Modal
+        // if(this.EditedRecords.length > 0){
+        //     LightningAlert.open({
+        //         message: "Your Changes are Not Saved.",
+        //         theme: "error",                                        
+        //         label: "Alert!", 
+        //     })
+        // }
         const backbutton = new CustomEvent("backbuttonclick", {
             // detail: pera_m
         });
@@ -205,13 +233,16 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
         this.spinnerDataTable = true
         this.showfiles = true;
         this.showtable = false;
+        this.selectedDocuments = [];
         this.getFilesforselectedRecord()
     }
 
     handleBack(event){
         this.selectedDocuments = [];
-        this.showtable = true;
         this.showfiles = false;
+        this.showfiletable = false;
+        this.showfilemessage = false;
+        this.showtable = true;
     }
 
     handleCheckboxChange(event) {
@@ -251,15 +282,21 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
 
     getFilesforselectedRecord(){
         console.log(this.projectid)
-        getContentDocuments({recordId:this.projectid})
+        console.log('folderids:- ',this.folderids)
+        getContentDocuments({recordId:this.projectid, folderId:this.folderids})
             .then ((response) =>{
-                console.log(response)
-                console.log(typeof(response))
-                const arrayOfObj = Object.values(response);
-                console.log("arrayOfObj :- ",arrayOfObj)
-
-                this.contentDocuments = arrayOfObj;
-                console.log("ContentDocuments :- ",this.contentDocuments)
+                console.log('response', response);
+                if(response.length > 0){
+                    console.log(response)
+                    console.log(typeof(response))
+                    const arrayOfObj = Object.values(response);
+                    console.log("arrayOfObj :- ",arrayOfObj)
+                    this.contentDocuments = arrayOfObj;
+                    this.showfiletable = true;
+                    console.log("ContentDocuments :- ",this.contentDocuments)
+                } else {
+                    this.showfilemessage = true;
+                }
                 this.spinnerDataTable = false
             });
     }
@@ -270,8 +307,13 @@ export default class PublickFileManageLWC extends NavigationMixin(LightningEleme
         .then((response) =>{
             console.log("Response on confirm click:- ",response);
             if(response == 'Success'){
-                this.template.querySelector('c-toast-component').showToast('success', 'Files are added to the selected folders and ready to be viewed publicly', 3000);
-                this.loadFileFolderJunctionData()
+                // this.template.querySelector('c-toast-component').showToast('success', 'Files are added to the selected folders and ready to be viewed publicly', 3000);
+                this.showToast('success', 'Files are added to the selected folders and ready to be viewed publicly', 'Success!');
+                this.showfiles=false;
+                this.showfiletable = false;
+                this.showfilemessage = false;
+                this.loadFileFolderJunctionData();
+                this.dispatchEvent(new CustomEvent('datarefresh'));
             }
         })
     }
