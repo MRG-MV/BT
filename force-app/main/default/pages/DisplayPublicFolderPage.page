@@ -5,6 +5,7 @@
     <div id="LightningComponentid" style="width:100%; min-height:100vh;"/>    
     <script>
     $Lightning.use("c:displayPublicFolderApp", function() {
+        console.log('displayPublicFolderApp Open In VF Page');
         $Lightning.createComponent("c:displayPublicFolderLWC",{ 
             folderId: "{!$CurrentPage.parameters.Id}"
           },
